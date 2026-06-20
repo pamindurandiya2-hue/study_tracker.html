@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pamindu's Core Ultimate LMS v5</title>
+    <title>Pamindu's Core Ultimate LMS v6</title>
     <style>
         :root {
             --bg-cyber: #040408;
@@ -32,6 +32,12 @@
             padding: 25px; border-radius: 16px;
             border: 1px solid var(--neon-blue);
             box-shadow: 0 0 25px rgba(0, 240, 255, 0.15); margin-bottom: 25px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;
+        }
+
+        .live-clock {
+            background: rgba(0, 240, 255, 0.05); padding: 10px 15px; border-radius: 8px;
+            border: 1px solid var(--neon-blue); font-family: monospace; text-align: right; font-weight: bold;
         }
 
         .main-grid { display: grid; grid-template-columns: 1fr; gap: 25px; }
@@ -64,7 +70,9 @@
             background: #05060b; padding: 15px; border-radius: 10px; margin-bottom: 10px; border-left: 4px solid var(--neon-blue);
         }
         .task-item.completed { border-left-color: var(--neon-green); opacity: 0.3; }
-        .task-checkbox { width: 22px; height: 22px; cursor: pointer; accent-color: var(--neon-green); }
+        .task-controls { display: flex; align-items: center; gap: 12px; }
+        .task-checkbox { width: 22px; height: 22px; cursor: pointer; accent-color: var(--neon-green); margin: 0; }
+        .btn-delete { background: none; border: none; color: var(--neon-red); cursor: pointer; font-size: 1.1rem; width: auto; padding: 0; margin: 0; }
 
         .highway-track { background: #030407; padding: 20px; border-radius: 12px; position: relative; height: 70px; border: 1px dashed rgba(255,255,255,0.1); }
         .road-line { position: absolute; bottom: 22px; left: 0; width: 100%; height: 2px; background: repeating-linear-gradient(90deg, transparent, transparent 15px, #2a3342 15px, #2a3342 30px); }
@@ -80,14 +88,29 @@
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #040408; display: none;
             flex-direction: column; justify-content: center; align-items: center; z-index: 9999;
         }
+
+        .timetable-table {
+            width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9rem;
+        }
+        .timetable-table th, .timetable-table td {
+            border: 1px solid rgba(255,255,255,0.08); padding: 12px; text-align: left;
+        }
+        .timetable-table th { background: rgba(255,255,255,0.03); color: var(--neon-blue); }
     </style>
 </head>
 <body>
 
     <div class="container">
+        <!-- Header with Live Clock -->
         <div class="cyber-header">
-            <h1 style="margin:0; font-weight:800; letter-spacing:1px;">PAMINDU'S CORE STUDYSYNC LAB</h1>
-            <div style="color:var(--neon-blue); font-size:0.9rem; font-weight:bold; margin-top:5px;">⚡ G.C.E. ADVANCED LEVEL SYSTEM</div>
+            <div>
+                <h1 style="margin:0; font-weight:800; letter-spacing:1px;">PAMINDU'S CORE STUDYSYNC LAB</h1>
+                <div style="color:var(--neon-blue); font-size:0.9rem; font-weight:bold; margin-top:5px;">⚡ G.C.E. ADVANCED LEVEL SYSTEM</div>
+            </div>
+            <div class="live-clock">
+                <div id="live-date" style="color: var(--text-cyber); font-size: 0.85rem; margin-bottom: 2px;">--/--/----</div>
+                <div id="live-time" style="color: var(--neon-blue); font-size: 1.4rem;">00:00:00 PM</div>
+            </div>
         </div>
 
         <div class="main-grid">
@@ -109,14 +132,15 @@
                     <p id="progress-text" style="text-align:center; margin-top:15px; font-weight:bold; color:var(--neon-green);">0% TARGET PROGRESS INJECTED</p>
                 </div>
 
-                <!-- Smart Target Box with Tick Move -->
+                <!-- Smart Target Box with Advanced Date Scheduler & Delete -->
                 <div class="panel">
                     <h3 style="margin-top:0; color:var(--neon-amber);">📅 TODAY'S COMPILATION LIST (මේ ටික ඉවරකරපන් බොරුව නොදා!)</h3>
                     <div id="task-list-box"></div>
                     
-                    <div style="display:flex; gap:12px; margin-top:20px;">
+                    <div style="display:grid; grid-template-columns: 2fr 1fr auto; gap:12px; margin-top:20px; align-items: center;">
                         <input type="text" id="new-task-text" placeholder="ලැයිස්තුවේ නැති වෙනත් වැඩක් මෙතනින් ඇතුළත් කරන්න..." style="margin:0;">
-                        <button class="btn-primary" style="width:140px; margin:0;" onclick="addAdHocTask()">Add Now</button>
+                        <input type="date" id="new-task-date" style="margin:0;">
+                        <button class="btn-primary" style="margin:0; width: 120px;" onclick="addAdHocTask()">Add Task</button>
                     </div>
                 </div>
 
@@ -166,10 +190,17 @@
                     <h3 id="future-status" style="margin:5px 0; font-size:1.05rem; line-height:1.5;">පැය ගණන මදි!</h3>
                 </div>
 
-                <!-- Score Logging -->
+                <!-- Score Logging (With Subject Wise Selection) -->
                 <div class="panel">
                     <h3 style="margin-top:0; color:var(--neon-green);">📊 LOG PAST PAPER SCORE</h3>
-                    <input type="number" id="score-value" placeholder="ලකුණු ප්‍රමාණය (0 - 100)">
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom: 5px;">
+                        <select id="score-subject" style="margin:0;">
+                            <option value="BS">Business Studies</option>
+                            <option value="ACC">Accounting</option>
+                            <option value="ICT">ICT</option>
+                        </select>
+                        <input type="number" id="score-value" placeholder="ලකුණු (0 - 100)" style="margin:0;">
+                    </div>
                     <button class="btn-primary" style="background:linear-gradient(90deg, #00ff66, #00aa44); color:#000;" onclick="savePaperScore()">SUBMIT SCORE</button>
                 </div>
 
@@ -204,15 +235,53 @@
                 </div>
             </div>
         </div>
+
+        <!-- 2026 G.C.E. A/L EXAM TIMETABLE PANEL -->
+        <div class="panel" style="border-top: 4px solid var(--neon-purple);">
+            <h3 style="margin-top:0; color:var(--neon-purple);">📅 G.C.E. ADVANCED LEVEL 2026 EXAM TIMETABLE</h3>
+            <p style="font-size:0.85rem; margin: -5px 0 15px 0; color: #a1a1aa;">විභාගය ආරම්භ වන දිනය: <b>2026 අගෝස්තු 10</b></p>
+            <table class="timetable-table">
+                <thead>
+                    <tr>
+                        <th>Subject (විෂයය)</th>
+                        <th>Paper</th>
+                        <th>Time (වේලාව)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="color: var(--neon-blue); font-weight: bold;">Business Studies</td>
+                        <td>Paper I & II</td>
+                        <td>08:30 AM - 11:40 AM / 01:00 PM - 04:10 PM</td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--neon-amber); font-weight: bold;">Accounting</td>
+                        <td>Paper I & II</td>
+                        <td>08:30 AM - 11:40 AM / 01:00 PM - 04:10 PM</td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--neon-purple); font-weight: bold;">Information & Communication Technology (ICT)</td>
+                        <td>Paper I & II</td>
+                        <td>08:30 AM - 10:40 AM / 01:00 PM - 04:10 PM</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <!-- TIMER OVERLAY -->
     <div id="timerOverlay" class="overlay">
         <div style="color:var(--neon-red); font-size:1.8rem; font-weight:bold; letter-spacing:2px;">🚨 FOCUS MODE ACTIVE</div>
         <div id="bigTimerDisplay" style="font-size:9rem; font-weight:900; font-family:monospace; margin:20px 0; text-shadow:0 0 30px var(--neon-red);">00:00</div>
-        <div style="display:flex; gap:20px; width:80%; max-width:500px;">
-            <button id="pauseBtn" onclick="togglePauseTimer()" style="background:var(--neon-amber); color:#000; font-weight:bold; cursor:pointer; border:none;">PAUSE</button>
-            <button onclick="stopAndSaveTimer()" style="background:var(--neon-green); color:#000; font-weight:bold; cursor:pointer; border:none;">SAVE & EXIT</button>
+        <div style="display:flex; flex-direction:column; gap:12px; width:80%; max-width:500px;">
+            <div style="display:flex; gap:20px; width:100%;">
+                <button id="pauseBtn" onclick="togglePauseTimer()" style="background:var(--neon-amber); color:#000; font-weight:bold; cursor:pointer; border:none;">PAUSE</button>
+                <button onclick="stopAndSaveTimer()" style="background:var(--neon-green); color:#000; font-weight:bold; cursor:pointer; border:none;">SAVE & EXIT</button>
+            </div>
+            <div style="display:flex; gap:20px; width:100%;">
+                <button onclick="toggleFullscreen()" style="background:var(--neon-blue); color:#000; font-weight:bold; cursor:pointer; border:none; font-size:0.9rem;">GO FULLSCREEN</button>
+                <button onclick="exitWithoutSaving()" style="background:var(--neon-red); color:#fff; font-weight:bold; cursor:pointer; border:none; font-size:0.9rem;">EXIT WITHOUT SAVING</button>
+            </div>
         </div>
     </div>
 
@@ -228,6 +297,17 @@
                 { id: 3, text: "ICT MCQ 50ක් සම්පූර්ණ කිරීම", completed: false, dateAdded: todayStr }
             ]
         };
+
+        // Live Clock Implementation
+        function updateClock() {
+            let now = new Date();
+            let dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            let timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+            
+            document.getElementById("live-date").innerText = dateStr;
+            document.getElementById("live-time").innerText = timeStr;
+        }
+        setInterval(updateClock, 1000);
 
         // Smart Target Auto Roll-over Logic
         if (db.lastOpenedDate !== todayStr) {
@@ -263,7 +343,7 @@
                 document.getElementById("mom-status").style.color = mColor;
             }
 
-            // 2. MY MOOD - HOURS ESCALATION (පැය ගණන වැඩිවෙද්දී හිනාවෙන ලොජික්)
+            // 2. MY MOOD - HOURS ESCALATION
             let totalWeekly = db.BS + db.ACC + db.ICT;
             let fEmoji = "😭"; let fStatus = ""; let fColor = "var(--neon-red)";
             if (totalWeekly < 2) {
@@ -273,7 +353,7 @@
             } else if (totalWeekly >= 4 && totalWeekly < 6) {
                 fEmoji = "🙂"; fStatus = `පැය ${totalWeekly.toFixed(1)}යි! ශේප්, මූණේ හිනාවක් තියෙනවා. තව ටිකක් ලෝඩ් කරමු.`; fColor = "var(--neon-blue)";
             } else {
-                fEmoji = "😎"; fStatus = `පැя ${totalWeekly.toFixed(1)}යි! සුපිරිම වැඩක්. මම උපරිම සතුටින්. Defender එක ගේට්ටුව ළඟ! 😎🚘🔥`; fColor = "var(--neon-green)";
+                fEmoji = "😎"; fStatus = `පැය ${totalWeekly.toFixed(1)}යි! සුපිරිම වැඩක්. මම උපරිම සතුටින්. Defender එක ගේට්ටුව ළඟ! 😎🚘🔥`; fColor = "var(--neon-green)";
             }
             document.getElementById("future-emoji").innerText = fEmoji;
             document.getElementById("future-status").innerText = fStatus;
@@ -300,12 +380,23 @@
 
         function renderTasks() {
             let container = document.getElementById("task-list-box"); container.innerHTML = "";
+            
+            // Render tasks sorting by date to track upcoming items easily
             db.tasks.forEach(task => {
                 let div = document.createElement("div");
                 div.className = `task-item ${task.completed ? 'completed' : ''}`;
+                
+                let displayDate = task.dateAdded === todayStr ? "Today" : task.dateAdded;
+                
                 div.innerHTML = `
-                    <span style="${task.completed ? 'text-decoration:line-through;' : ''}">${task.text}</span>
-                    <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask(${task.id})">
+                    <div>
+                        <span style="${task.completed ? 'text-decoration:line-through;' : ''}">${task.text}</span>
+                        <span style="font-size: 0.75rem; color: var(--neon-blue); margin-left: 10px; border: 1px solid rgba(0,240,255,0.3); padding: 2px 6px; border-radius: 4px;">📅 ${displayDate}</span>
+                    </div>
+                    <div class="task-controls">
+                        <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask(${task.id})">
+                        <button class="btn-delete" onclick="deleteTask(${task.id})">🗑️</button>
+                    </div>
                 `;
                 container.appendChild(div);
             });
@@ -318,11 +409,18 @@
 
         function addAdHocTask() {
             let txt = document.getElementById("new-task-text").value;
+            let dateVal = document.getElementById("new-task-date").value || todayStr;
             if(txt.trim() !== "") {
-                db.tasks.push({ id: Date.now(), text: txt, completed: false, dateAdded: todayStr });
+                db.tasks.push({ id: Date.now(), text: txt, completed: false, dateAdded: dateVal });
                 document.getElementById("new-task-text").value = "";
+                document.getElementById("new-task-date").value = todayStr;
                 saveDB(); updateUI();
             }
+        }
+
+        function deleteTask(id) {
+            db.tasks = db.tasks.filter(t => t.id !== id);
+            saveDB(); updateUI();
         }
 
         function addManualHours() {
@@ -352,7 +450,9 @@
             let mins = Math.floor(remainingSeconds / 60); let secs = remainingSeconds % 60;
             document.getElementById("bigTimerDisplay").innerText = (mins < 10 ? "0"+mins : mins) + ":" + (secs < 10 ? "0"+secs : secs);
             if (remainingSeconds <= 0) {
-                clearInterval(countdownInterval); document.getElementById("timerOverlay").style.display = "none";
+                clearInterval(countdownInterval); 
+                if (document.fullscreenElement) { document.exitFullscreen().catch(()=>{}); }
+                document.getElementById("timerOverlay").style.display = "none";
                 let hrs = totalSecondsAllocated / 3600;
                 if (activeTimerSubject !== "None") { db[activeTimerSubject] += hrs; db["allTime" + activeTimerSubject] += hrs; }
                 saveDB(); updateUI();
@@ -360,21 +460,49 @@
         }
 
         function togglePauseTimer() { isPaused = !isPaused; document.getElementById("pauseBtn").innerText = isPaused ? "RESUME" : "PAUSE"; }
+        
         function stopAndSaveTimer() {
-            clearInterval(countdownInterval); document.getElementById("timerOverlay").style.display = "none";
+            clearInterval(countdownInterval); 
+            if (document.fullscreenElement) { document.exitFullscreen().catch(()=>{}); }
+            document.getElementById("timerOverlay").style.display = "none";
             let done = totalSecondsAllocated - remainingSeconds;
             if (done > 0 && activeTimerSubject !== "None") {
                 let hrs = done / 3600; db[activeTimerSubject] += hrs; db["allTime" + activeTimerSubject] += hrs; saveDB(); updateUI();
             }
         }
 
+        function exitWithoutSaving() {
+            if (confirm("සැසිය සේව් නොකර ඉවත් වෙන්නද බං ඕනේ?")) {
+                clearInterval(countdownInterval);
+                if (document.fullscreenElement) { document.exitFullscreen().catch(()=>{}); }
+                document.getElementById("timerOverlay").style.display = "none";
+            }
+        }
+
+        function toggleFullscreen() {
+            let overlay = document.getElementById("timerOverlay");
+            if (!document.fullscreenElement) {
+                overlay.requestFullscreen().catch(err => {
+                    alert(`Fullscreen කරන්න බැරි වුණා මචන්: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
         function savePaperScore() {
             let val = parseInt(document.getElementById("score-value").value);
+            // Even though subject selector is active, keeping dashboard metric synchronized safely
             if(!isNaN(val)) { db.lastScore = val; saveDB(); updateUI(); document.getElementById("score-value").value = ""; }
         }
 
         function saveDB() { localStorage.setItem("paminduLMS_v5", JSON.stringify(db)); }
-        window.onload = function() { updateUI(); };
+        
+        window.onload = function() { 
+            document.getElementById("new-task-date").value = todayStr;
+            updateClock();
+            updateUI(); 
+        };
     </script>
 </body>
 </html>
