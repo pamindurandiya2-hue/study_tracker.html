@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pamindu's Core Ultimate LMS v7</title>
+    <title>Pamindu's Core Ultimate LMS v7.1</title>
     <style>
         :root {
             --bg-cyber: #040408;
@@ -117,7 +117,6 @@
             text-shadow: 0 0 10px rgba(0, 255, 102, 0.5); margin-top: 5px;
         }
 
-        /* --- AI CHAT MODULE CSS DESIGN --- */
         .ai-chat-container {
             border: 1px solid rgba(0, 240, 255, 0.3); background: #060813; border-radius: 12px; padding: 15px; margin-top: 15px;
             box-shadow: 0 0 15px rgba(0, 240, 255, 0.05);
@@ -132,7 +131,6 @@
         .ai-loading { color: var(--neon-amber); font-weight: bold; display: none; font-size: 0.85rem; text-align: center; margin-bottom: 10px; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
 
-        /* --- NEON LINE CHART DESIGNS --- */
         .line-chart-container {
             background: #05060b; padding: 15px; border-radius: 12px; margin-top: 15px; border: 1px solid rgba(255,255,255,0.05);
         }
@@ -226,7 +224,7 @@
                 </div>
 
                 <div class="panel">
-                    <h3 style="margin-top:0;">➕ LOG STUDY / RECORDING HOURS MANUALLY</h3>
+                    <h3 style="margin-top:0; color:var(--neon-green);">➕ LOG STUDY / RECORDING HOURS MANUALLY</h3>
                     <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
                         <select id="log-subject" style="margin:0;">
                             <option value="BS">Business Studies</option>
@@ -236,6 +234,20 @@
                         <input type="number" id="log-amount" placeholder="පැය ගණන (Ex: 2)" step="any" style="margin:0;">
                     </div>
                     <button class="btn-primary" style="margin-top:15px;" onclick="addManualHours()">SAVE LOG</button>
+                    
+                    <!-- --- NEW RESET / CORRECT HOURS PANEL --- -->
+                    <div style="margin-top: 20px; padding-top: 15px; border-top: 1px dashed rgba(255,255,255,0.1);">
+                        <h4 style="margin:0 0 8px 0; color:var(--neon-red); font-size:0.85rem; text-transform:uppercase;">🚨 Reset / Correct Study Hours (වැරදුණු පැය අඩු කරන්න)</h4>
+                        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
+                            <select id="correct-subject" style="margin:0; padding:8px; font-size:0.85rem;">
+                                <option value="BS">Business Studies</option>
+                                <option value="ACC">Accounting</option>
+                                <option value="ICT">ICT</option>
+                            </select>
+                            <input type="number" id="correct-amount" placeholder="අඩු කළ යුතු පැය" step="any" style="margin:0; padding:8px; font-size:0.85rem;">
+                            <button onclick="removeManualHours()" style="margin:0; padding:8px; background:linear-gradient(90deg, #ff0055, #aa0033); border:none; font-weight:bold; cursor:pointer; font-size:0.8rem; border-radius:10px;">REMOVE HOURS</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -417,7 +429,6 @@
             scoresHistory: []
         };
 
-        // DB backward compatibility check
         if(!db.scoresHistory) { db.scoresHistory = []; }
         if(!db.apiKey) { db.apiKey = ""; }
         if(db.todayBS === undefined) { db.todayBS = 0; db.todayACC = 0; db.todayICT = 0; }
@@ -459,7 +470,6 @@
         }
         setInterval(updateClock, 1000);
 
-        // Reset daily hours if date changed
         if (db.lastOpenedDate !== todayStr) {
             db.todayBS = 0; db.todayACC = 0; db.todayICT = 0;
             db.tasks.forEach(t => { if (!t.completed) { t.dateAdded = todayStr; } });
@@ -472,7 +482,6 @@
         }
 
         function updateUI() {
-            // Cards Update
             document.getElementById("today-hours-bs").innerText = db.todayBS.toFixed(1) + "h";
             document.getElementById("today-hours-acc").innerText = db.todayACC.toFixed(1) + "h";
             document.getElementById("today-hours-ict").innerText = db.todayICT.toFixed(1) + "h";
@@ -491,7 +500,7 @@
                 let mEmoji = "💀"; let mStatus = ""; let mColor = "var(--neon-red)"; let s = db.lastScore;
                 if (s >= 75) { mEmoji = "🧐"; mStatus = `ලකුණු ${s}යි (Grade A). ම්ම්.. ඔහොමම කරමු. හැබැයි උඩ යන්න එපා, ඊළඟ පාර මීට වඩා ඕනේ! 🧐💪`; mColor = "var(--neon-green)"; }
                 else if (s >= 65) { mEmoji = "😤"; mStatus = `ලකුණු ${s}යි (Grade B). B එකක් අරන් සතුටු වෙන්න එපා! ඕකෙන් කැම්පස් යන්න බැහැ. මැරීගෙන වැඩ කරලා A එකකට පලයන්! 😤`; mColor = "var(--neon-amber)"; }
-                else if (s >= 55) { mEmoji = "🤬"; mStatus = `ලකුණු ${s}යි (Grade C). C කෑල්ලක් අරන්ද තමුසෙ ඔය ඩිෆෙන්ඩර් හීන දකින්නේ? ඕක වහලා දාලා නිදාගන්නවා ගිහින්! 🤬🔥`; mColor = "var(--neon-red)"; }
+                else if (s >= 55) { mEmoji = "🤬"; mStatus = `ලකුණු ${s}යි (Grade C). C කෑල්ලක් අරන්ද තමුසෙ ඔය ඩිෆෙන්ඩර් හීන ඩිෆෙන්ඩර් හීන දකින්නේ? ඕක වහලා දාලා නිදාගන්නවා ගිහින්! 🤬🔥`; mColor = "var(--neon-red)"; }
                 else if (s >= 35) { mEmoji = "🤮"; mStatus = `ලකුණු ${s}යි (Grade S). S එකක්! තමුසෙට ලැජ්ජාවක් නැද්ද, පාරවල් ගානේ රස්තියාදු වෙන්නද හදන්නේ? 🤮❌`; mColor = "var(--neon-red)"; }
                 else { mEmoji = "💀"; mStatus = `ලකුණු ${s}යි (Grade F). F එකක්! විභාගෙ ලඟයි, තමුසෙ නම් අනිවා අනාථයි! 💀`; mColor = "var(--neon-red)"; }
                 document.getElementById("mom-emoji").innerText = mEmoji; document.getElementById("mom-status").innerText = mStatus; document.getElementById("mom-status").style.color = mColor;
@@ -501,7 +510,7 @@
             let totalMonthly = db.monthBS + db.monthACC + db.monthICT;
             let fEmoji = "😭"; let fStatus = ""; let fColor = "var(--neon-red)";
             
-            if (totalWeekly >= 8 || totalMonthly >= 35) { fEmoji = "😎"; fStatus = `සතියට පැය ${totalWeekly.toFixed(1)}යි, මාසෙට පැය ${totalMonthly.toFixed(1)}යි! සුපිරිම වැඩක්. මම උපරිම සතුටින්. Defender එක ගේට්ටුව ළඟ! 😎🚘🔥`; fColor = "var(--neon-green)"; }
+            if (totalWeekly >= 8 || totalMonthly >= 35) { fEmoji = "😎"; fStatus = `සතියට පැය ${totalWeekly.toFixed(1)}යි, මාසෙට පැය ${totalMonthly.toFixed(1)}යි! Supiri වැඩක්. මම උපරිම සතුටින්. Defender එක ගේට්ටුව ළඟ! 😎🚘🔥`; fColor = "var(--neon-green)"; }
             else if (totalWeekly >= 5 || totalMonthly >= 20) { fEmoji = "🙂"; fStatus = `පැය ගණන ශේප්, මූණේ හිනාවක් තියෙනවා. තව ටිකක් ලෝඩ් කරමු මචං!`; fColor = "var(--neon-blue)"; }
             else if (totalWeekly >= 2 || totalMonthly >= 8) { fEmoji = "😐"; fStatus = `සතියට පැය ${totalWeekly.toFixed(1)}යි. සාමාන්‍ය කම්මැලි මට්ටම. ඩිෆෙන්ඩර් හීන ඈතයි!`; fColor = "var(--neon-amber)"; }
             else { fEmoji = "😭"; fStatus = `පැය ${totalWeekly.toFixed(1)}යි! මුළුමනින්ම කඩාවැටීමක්, විඳවන්න ලෑස්ති වෙයන්! පැය ගණන madi!`; fColor = "var(--neon-red)"; }
@@ -513,10 +522,8 @@
             document.getElementById("defender-car").style.left = (tickPercentage * 0.9) + "%";
             document.getElementById("progress-text").innerText = `${tickPercentage.toFixed(0)}% TARGET PROGRESS ACTIVATED`;
 
-            // Charts Math & Maximum calculation
             let maxVal = Math.max(db.todayBS, db.todayACC, db.todayICT, db.BS, db.ACC, db.ICT, db.monthBS, db.monthACC, db.monthICT, 1);
             
-            // Set Text overlay inside bars
             document.getElementById("text-today-bs").innerText = db.todayBS.toFixed(1) + "h";
             document.getElementById("text-today-acc").innerText = db.todayACC.toFixed(1) + "h";
             document.getElementById("text-today-ict").innerText = db.todayICT.toFixed(1) + "h";
@@ -527,7 +534,6 @@
             document.getElementById("text-month-acc").innerText = db.monthACC.toFixed(1) + "h";
             document.getElementById("text-month-ict").innerText = db.monthICT.toFixed(1) + "h";
 
-            // Set Heights dynamically
             document.getElementById("bar-today-bs").style.height = ((db.todayBS / maxVal) * 140) + "px";
             document.getElementById("bar-today-acc").style.height = ((db.todayACC / maxVal) * 140) + "px";
             document.getElementById("bar-today-ict").style.height = ((db.todayICT / maxVal) * 140) + "px";
@@ -582,6 +588,25 @@
             }
         }
 
+        // --- NEW REMOVE HOURS FUNCTION ---
+        function removeManualHours() {
+            let sub = document.getElementById("correct-subject").value;
+            let amt = parseFloat(document.getElementById("correct-amount").value);
+            if (!isNaN(amt) && amt > 0) {
+                // සෘණ අගයන් වලට යාම වැලැක්වීම
+                db["today" + sub] = Math.max(0, db["today" + sub] - amt);
+                db[sub] = Math.max(0, db[sub] - amt);
+                db["month" + sub] = Math.max(0, db["month" + sub] - amt);
+                db["allTime" + sub] = Math.max(0, db["allTime" + sub] - amt);
+                
+                saveDB(); updateUI();
+                document.getElementById("correct-amount").value = "";
+                alert(`성공! ${sub} විෂයෙන් පැය ${amt}ක් සාර්ථකව අඩු කළා මචං.`);
+            } else {
+                alert("අඩු කරන්න ඕන පැය ගණන නිවැරදිව ඇතුළත් කරන්න!");
+            }
+        }
+
         let countdownInterval; let isPaused = false; let totalSecondsAllocated = 0; let remainingSeconds = 0; let activeTimerSubject = "None";
         function startPaperTimer() {
             let durationMins = parseFloat(document.getElementById("timer-duration").value); if (isNaN(durationMins) || durationMins <= 0) return alert("කාලය හරියට දාපන් මචන්!");
@@ -601,7 +626,7 @@
 
         function savePaperScore() {
             let pName = document.getElementById("score-paper-name").value.trim(); let sub = document.getElementById("score-subject").value; let val = parseInt(document.getElementById("score-value").value);
-            if(pName === "") return alert("අනේ මචං, පේපර් එක අඳුරගන්න නමක් දාපන්! (Ex: 2024 ICT Paper I)");
+            if(pName === "") return alert("අනේ මචං, පේපර් එක අඳුරගන්න නමක් දාපන්!");
             if(isNaN(val) || val < 0 || val > 100) return alert("ලකුණු 0ත් 100ත් අතර නිවැරදි අගයක් දාපන්!");
             db.scoresHistory.push({ id: Date.now(), paperName: pName, subject: sub, score: val }); db.lastScore = val; saveDB(); updateUI();
             document.getElementById("score-paper-name").value = ""; document.getElementById("score-value").value = "";
@@ -674,26 +699,18 @@
             dlAnchorElem.click();
         }
 
-        function triggerRestoreClick() {
-            document.getElementById("restore-file-input").click();
-        }
+        function triggerRestoreClick() { document.getElementById("restore-file-input").click(); }
 
         function restoreBackup(event) {
-            let input = event.target;
-            let reader = new FileReader();
+            let input = event.target; let reader = new FileReader();
             reader.onload = function() {
                 try {
                     let importedDb = JSON.parse(reader.result);
                     if (importedDb.tasks && importedDb.scoresHistory) {
-                        db = importedDb;
-                        saveDB(); updateUI();
-                        alert("🗄️ Backup එක සාර්ථකව Restore කරගත්තා මචං! සුපිරි.");
-                    } else {
-                        alert("වැරදි ෆයිල් එකක්! නිවැරදි Backup JSON ෆයිල් එකක් තෝරන්න.");
-                    }
-                } catch (e) {
-                    alert("ෆයිල් එක කියවීමේදී දෝෂයක් ආවා! JSON ෆයිල් එකක්මද බලන්න.");
-                }
+                        db = importedDb; saveDB(); updateUI();
+                        alert("🗄️ Backup එක සාර්ථකව Restore කරගත්තා මචං!");
+                    } else { alert("වැරදි ෆයිල් එකක්!"); }
+                } catch (e) { alert("දෝෂයක් ආවා!"); }
             };
             if(input.files[0]) { reader.readAsText(input.files[0]); }
         }
@@ -710,7 +727,7 @@
             - Monthly Study Hours: BS: ${db.monthBS.toFixed(1)}h, ACC: ${db.monthACC.toFixed(1)}h, ICT: ${db.monthICT.toFixed(1)}h
             - Recent Past Paper Scores: ${JSON.stringify(db.scoresHistory)}
             - Current Uncompleted Tasks: ${JSON.stringify(db.tasks.filter(t => !t.completed))}
-            Give solid, strategic study advice or answers based exactly on his status. Do not talk about external things unless relevant to helping him pass the exam and buy his dream Land Rover Defender. Keep responses structured and concise.`;
+            Give solid, strategic study advice or answers based exactly on his status. Keep responses structured and concise.`;
 
             try {
                 let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${db.apiKey}`, {
@@ -723,8 +740,7 @@
                 return data.candidates[0].content.parts[0].text;
             } catch (err) {
                 document.getElementById("ai-loading-text").style.display = "none";
-                alert("API Error එකක් ආවා! Key එක නිවැරදිද කියා පරීක්ෂා කරන්න.");
-                return null;
+                alert("API Error එකක් ආවා!"); return null;
             }
         }
 
@@ -746,7 +762,6 @@
         }
 
         function saveDB() { localStorage.setItem("paminduLMS_v7", JSON.stringify(db)); }
-        
         window.onload = function() { document.getElementById("new-task-date").value = todayStr; updateClock(); updateUI(); };
     </script>
 </body>
