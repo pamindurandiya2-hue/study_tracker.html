@@ -126,6 +126,15 @@
         .msg.ai { background: #bd00ff11; border-left: 3px solid var(--neon-purple); margin-right: auto; color: #e2e8f0; white-space: pre-line; }
         .ai-loading { color: var(--neon-amber); font-weight: bold; display: none; font-size: 0.85rem; text-align: center; margin-bottom: 10px; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+
+        /* --- NEON LINE CHART DESIGNS --- */
+        .line-chart-container {
+            background: #05060b; padding: 15px; border-radius: 12px; margin-top: 15px; border: 1px solid rgba(255,255,255,0.05);
+        }
+        .chart-svg { width: 100%; height: 130px; overflow: visible; }
+        .chart-line { stroke: var(--neon-green); stroke-width: 3; fill: none; filter: drop-shadow(0 0 5px var(--neon-green)); transition: all 0.5s ease; }
+        .chart-point { fill: #fff; stroke: var(--neon-purple); stroke-width: 2; r: 4; cursor: pointer; }
+        .chart-point:hover { r: 6; fill: var(--neon-blue); }
     </style>
 </head>
 <body>
@@ -230,6 +239,14 @@
                     </div>
                     <button class="btn-primary" style="background:linear-gradient(90deg, #00ff66, #00aa44); color:#000; margin-top:10px;" onclick="savePaperScore()">SUBMIT SCORE</button>
                     
+                    <div class="line-chart-container">
+                        <h4 style="margin:0 0 10px 0; font-size:0.8rem; color:var(--neon-green); text-transform:uppercase; letter-spacing:1px;">📈 SCORE PERFORMANCE TIMELINE</h4>
+                        <svg class="chart-svg" id="scoreLineChart">
+                            <g id="chartLinesGroup"></g>
+                            <g id="chartPointsGroup"></g>
+                        </svg>
+                    </div>
+
                     <div class="score-history-box">
                         <table class="timetable-table" style="margin:0; font-size:0.8rem;" id="score-history-table">
                             <thead>
@@ -243,6 +260,16 @@
                             <tbody id="score-history-tbody"></tbody>
                         </table>
                     </div>
+                </div>
+
+                <div class="panel" style="border: 1px solid var(--neon-amber); background: #0c0802;">
+                    <h3 style="margin-top:0; color:var(--neon-amber); display:flex; align-items:center; gap:8px;">🗄️ SYSTEM DATA BACKUP ENGINE</h3>
+                    <p style="font-size:0.75rem; color:#a1a1aa; margin:-5px 0 10px 0;">ඩේටා මැකී යාම වැලැක්වීමට මෙතනින් Backup එකක් බාගත කර තබාගන්න.</p>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                        <button onclick="downloadBackup()" style="background:linear-gradient(90deg, #ffaa00, #996600); color:white; font-weight:bold; font-size:0.8rem; padding:10px; border:none; cursor:pointer; border-radius:8px;">📥 DOWNLOAD BACKUP</button>
+                        <button onclick="triggerRestoreClick()" style="background:linear-gradient(90deg, #00f0ff, #0066aa); color:black; font-weight:bold; font-size:0.8rem; padding:10px; border:none; cursor:pointer; border-radius:8px;">📤 RESTORE BACKUP</button>
+                    </div>
+                    <input type="file" id="restore-file-input" onchange="restoreBackup(event)" style="display:none;" accept=".json">
                 </div>
 
                 <div class="panel" style="border: 1px solid var(--neon-purple); background: #080312;">
@@ -440,7 +467,7 @@
             document.getElementById("bar-all-acc").style.height = ((db.allTimeACC / maxVal) * 100) + "px";
             document.getElementById("bar-all-ict").style.height = ((db.allTimeICT / maxVal) * 100) + "px";
 
-            renderTasks(); renderScoreHistory();
+            renderTasks(); renderScoreHistory(); drawLineChart();
         }
 
         function renderTasks() {
@@ -515,6 +542,80 @@
                 if(db.scoresHistory.length > 0) { db.lastScore = db.scoresHistory[db.scoresHistory.length - 1].score; } else { db.lastScore = -1; }
                 saveDB(); updateUI();
             }
+        }
+
+        // --- NEW LINE CHART LOGIC ---
+        function drawLineChart() {
+            let lineGroup = document.getElementById("chartLinesGroup");
+            let pointGroup = document.getElementById("chartPointsGroup");
+            lineGroup.innerHTML = ""; pointGroup.innerHTML = "";
+            
+            let history = db.scoresHistory;
+            if (history.length < 2) {
+                lineGroup.innerHTML = `<text x="50%" y="50%" fill="#4b5563" text-anchor="middle" font-size="0.8rem">ලකුණු ප්‍රස්ථාරය ඇඳීමට ලකුණු Record 2ක් වත් තියෙන්න ඕනේ මචං!</text>`;
+                return;
+            }
+
+            let width = 300; let height = 100;
+            let paddingX = 20; let paddingY = 15;
+            let activeWidth = width - (paddingX * 2);
+            let activeHeight = height - (paddingY * 2);
+            
+            let pointsStr = "";
+            let stepX = activeWidth / (history.length - 1);
+
+            history.forEach((record, idx) => {
+                let cx = paddingX + (idx * stepX);
+                let cy = paddingY + activeHeight - ((record.score / 100) * activeHeight);
+                pointsStr += `${cx},${cy} `;
+
+                let circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                circle.setAttribute("cx", cx); circle.setAttribute("cy", cy);
+                circle.className.baseVal = "chart-point";
+                
+                let title = document.createElementNS("http://www.w3.org/2000/svg", "title");
+                title.textContent = `${record.paperName} (${record.subject}): ${record.score}`;
+                circle.appendChild(title);
+                pointGroup.appendChild(circle);
+            });
+
+            let polyline = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+            polyline.setAttribute("points", pointsStr);
+            polyline.className.baseVal = "chart-line";
+            lineGroup.appendChild(polyline);
+        }
+
+        // --- NEW BACKUP & RESTORE LOGIC ---
+        function downloadBackup() {
+            let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db, null, 4));
+            let dlAnchorElem = document.createElement('a');
+            dlAnchorElem.setAttribute("href", dataStr);
+            dlAnchorElem.setAttribute("download", `paminduLMS_Backup_${new Date().toISOString().split('T')[0]}.json`);
+            dlAnchorElem.click();
+        }
+
+        function triggerRestoreClick() {
+            document.getElementById("restore-file-input").click();
+        }
+
+        function restoreBackup(event) {
+            let input = event.target;
+            let reader = new FileReader();
+            reader.onload = function() {
+                try {
+                    let importedDb = JSON.parse(reader.result);
+                    if (importedDb.tasks && importedDb.scoresHistory) {
+                        db = importedDb;
+                        saveDB(); updateUI();
+                        alert("🗄️ Backup එක සාර්ථකව Restore කරගත්තා මචං! සුපිරි.");
+                    } else {
+                        alert("වැරදි ෆයිල් එකක්! නිවැරදි Backup JSON ෆයිල් එකක් තෝරන්න.");
+                    }
+                } catch (e) {
+                    alert("ෆයිල් එක කියවීමේදී දෝෂයක් ආවා! JSON ෆයිල් එකක්මද බලන්න.");
+                }
+            };
+            if(input.files[0]) { reader.readAsText(input.files[0]); }
         }
 
         // --- CORE LIVE GEMINI ENGINE CONNECTOR ---
