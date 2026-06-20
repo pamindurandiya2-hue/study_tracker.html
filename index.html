@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pamindu's Core Ultimate LMS v6</title>
+    <title>Pamindu's Core Ultimate LMS v7</title>
     <style>
         :root {
             --bg-cyber: #040408;
@@ -56,7 +56,7 @@
         .bg-ict { background: linear-gradient(135deg, #18052e, #631d9c); border-bottom: 4px solid var(--neon-purple); }
         .hours-val { font-size: 2.2rem; font-weight: 800; font-family: monospace; }
 
-        select, input, button {
+        select, input, button, textarea {
             width: 100%; padding: 14px; margin: 10px 0; border-radius: 10px;
             border: 1px solid rgba(255,255,255,0.1); background: #05060b; color: white; box-sizing: border-box;
         }
@@ -97,7 +97,6 @@
         }
         .timetable-table th { background: rgba(255,255,255,0.03); color: var(--neon-blue); }
 
-        /* Score History Style Updates */
         .score-history-box {
             max-height: 200px; overflow-y: auto; margin-top: 15px; border: 1px solid rgba(255,255,255,0.05); border-radius: 8px;
         }
@@ -112,6 +111,21 @@
             font-family: monospace; font-size: 1.8rem; font-weight: bold; color: var(--neon-green);
             text-shadow: 0 0 10px rgba(0, 255, 102, 0.5); margin-top: 5px;
         }
+
+        /* --- AI CHAT MODULE CSS DESIGN --- */
+        .ai-chat-container {
+            border: 1px solid rgba(0, 240, 255, 0.3); background: #060813; border-radius: 12px; padding: 15px; margin-top: 15px;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.05);
+        }
+        .ai-chat-messages {
+            height: 220px; overflow-y: auto; background: #030408; border-radius: 8px; padding: 12px;
+            border: 1px solid rgba(255,255,255,0.05); margin-bottom: 10px; font-size: 0.9rem; line-height: 1.5;
+        }
+        .msg { margin-bottom: 12px; padding: 10px; border-radius: 8px; max-width: 85%; word-wrap: break-word; }
+        .msg.user { background: #0044ff22; border-left: 3px solid var(--neon-blue); margin-left: auto; color: #fff; }
+        .msg.ai { background: #bd00ff11; border-left: 3px solid var(--neon-purple); margin-right: auto; color: #e2e8f0; white-space: pre-line; }
+        .ai-loading { color: var(--neon-amber); font-weight: bold; display: none; font-size: 0.85rem; text-align: center; margin-bottom: 10px; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
     </style>
 </head>
 <body>
@@ -203,7 +217,6 @@
                     <h3 id="future-status" style="margin:5px 0; font-size:1.05rem; line-height:1.5;">පැය ගණන madi!</h3>
                 </div>
 
-                <!-- UPDATED: LOG PAST PAPER SCORE WITH NAME FIELD -->
                 <div class="panel">
                     <h3 style="margin-top:0; color:var(--neon-green);">📊 LOG PAST PAPER SCORE</h3>
                     <input type="text" id="score-paper-name" placeholder="පේපර් එකේ නම (Ex: 2022 Past Paper I)" style="margin-bottom:10px;">
@@ -217,7 +230,6 @@
                     </div>
                     <button class="btn-primary" style="background:linear-gradient(90deg, #00ff66, #00aa44); color:#000; margin-top:10px;" onclick="savePaperScore()">SUBMIT SCORE</button>
                     
-                    <!-- New History Table Area -->
                     <div class="score-history-box">
                         <table class="timetable-table" style="margin:0; font-size:0.8rem;" id="score-history-table">
                             <thead>
@@ -228,10 +240,30 @@
                                     <th>ක්‍රියාව</th>
                                 </tr>
                             </thead>
-                            <tbody id="score-history-tbody">
-                                <!-- History Rows inject dynamically -->
-                            </tbody>
+                            <tbody id="score-history-tbody"></tbody>
                         </table>
+                    </div>
+                </div>
+
+                <div class="panel" style="border: 1px solid var(--neon-purple); background: #080312;">
+                    <h3 style="margin-top:0; color:var(--neon-purple); display:flex; align-items:center; gap:8px;">🤖 GEMINI AI COACH</h3>
+                    
+                    <div style="margin-bottom:10px;">
+                        <label style="font-size:0.75rem; color:#a1a1aa;">Gemini API Key එක ඇතුළත් කරන්න:</label>
+                        <input type="password" id="gemini-key-input" placeholder="AI Studio Key (AIzaSy...)" onchange="saveApiKey()" style="margin:4px 0 0 0; padding:8px; font-size:0.8rem;">
+                    </div>
+
+                    <div class="ai-chat-container">
+                        <div class="ai-chat-messages" id="chat-box">
+                            <div class="msg ai">මම ඔයාගේ Gemini AI Study Coach. ඔයාගේ API Key එක උඩින් දාලා, මගෙන් ඕනම ප්‍රශ්නයක් අහන්න මචං! නැත්නම් "Analyze Progress" බටන් එක ඔබන්න.</div>
+                        </div>
+                        <div class="ai-loading" id="ai-loading-text">⚡ Gemini කල්පනා කරමින් පවතියි...</div>
+                        
+                        <div style="display:grid; grid-template-columns: 1fr auto; gap:8px;">
+                            <input type="text" id="ai-user-query" placeholder="ප්‍රශ්නයක් අහන්න (Ex: ICT ගොඩ දාන්න ක්‍රමයක්)" style="margin:0; padding:10px; font-size:0.85rem;">
+                            <button onclick="askGemini()" style="margin:0; width:60px; background:var(--neon-purple); border:none; font-weight:bold; cursor:pointer; color:white; border-radius:8px;">ASK</button>
+                        </div>
+                        <button onclick="analyzeProgressWithAI()" style="background:linear-gradient(90deg, #00f0ff, #bd00ff); color:black; font-weight:bold; font-size:0.8rem; margin-top:8px; padding:10px; border:none; cursor:pointer; width:100%; border-radius:8px;">📊 ANALYZE ENTIRE PROGRESS WITH AI</button>
                     </div>
                 </div>
 
@@ -278,46 +310,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td><b>2026 අගෝස්තු 13 (බ්‍රහස්පතින්දා)</b></td>
-                        <td style="color: var(--neon-blue); font-weight: bold;">Business Studies</td>
-                        <td>Paper I (08:30 AM - 10:30 AM)</td>
-                    </tr>
-                    <tr>
-                        <td><b>2026 අගෝස්තු 17 (සඳුදා)</b></td>
-                        <td style="color: var(--neon-blue); font-weight: bold;">Business Studies</td>
-                        <td>Paper II (01:00 PM - 04:10 PM)</td>
-                    </tr>
-                    <tr>
-                        <td><b>2026 අගෝස්තු 21 (සිකුරාදා)</b></td>
-                        <td style="color: #00ff66; font-weight: bold;">Common General Test (පොදු පරීක්ෂණය)</td>
-                        <td>08:30 AM - 10:30 AM</td>
-                    </tr>
-                    <tr>
-                        <td><b>2026 අගෝස්තු 22 (සෙනසුරාදා)</b></td>
-                        <td style="color: #e2f516; font-weight: bold;">General English</td>
-                        <td>Paper II (08:30 AM - 11:40 AM) <br> Paper I (01:00 PM - 02:40 PM)</td>
-                    </tr>
-                    <tr>
-                        <td><b>2026 අගෝස්තු 25 (අඟහරුවාදා)</b></td>
-                        <td style="color: var(--neon-amber); font-weight: bold;">Accounting</td>
-                        <td>Paper I (08:30 AM - 10:30 AM)</td>
-                    </tr>
-                    <tr>
-                        <td><b>2026 අගෝස්තු 29 (සෙනසුරාදා)</b></td>
-                        <td style="color: var(--neon-purple); font-weight: bold;">Information & Communication Technology (ICT)</td>
-                        <td>Paper I (01:00 PM - 03:00 PM)</td>
-                    </tr>
-                    <tr>
-                        <td><b>2026 අගෝස්තු 31 (සඳුදා)</b></td>
-                        <td style="color: var(--neon-amber); font-weight: bold;">Accounting</td>
-                        <td>Paper II (08:30 AM - 11:40 AM)</td>
-                    </tr>
-                    <tr>
-                        <td><b>2026 සැප්තැම්බර් 01 (අඟහරුවාදා)</b></td>
-                        <td style="color: var(--neon-purple); font-weight: bold;">Information & Communication Technology (ICT)</td>
-                        <td>Paper II (08:30 AM - 11:40 AM)</td>
-                    </tr>
+                    <tr><td><b>2026 අගෝස්තු 13 (බ්‍රහස්පතින්දා)</b></td><td style="color: var(--neon-blue); font-weight: bold;">Business Studies</td><td>Paper I (08:30 AM - 10:30 AM)</td></tr>
+                    <tr><td><b>2026 අගෝස්තු 17 (සඳුදා)</b></td><td style="color: var(--neon-blue); font-weight: bold;">Business Studies</td><td>Paper II (01:00 PM - 04:10 PM)</td></tr>
+                    <tr><td><b>2026 අගෝස්තු 21 (සිකුරාදා)</b></td><td style="color: #00ff66; font-weight: bold;">Common General Test (පොදු පරීක්ෂණය)</td><td>08:30 AM - 10:30 AM</td></tr>
+                    <tr><td><b>2026 අගෝස්තු 22 (සෙනසුරාදා)</b></td><td style="color: #e2f516; font-weight: bold;">General English</td><td>Paper II (08:30 AM - 11:40 AM) <br> Paper I (01:00 PM - 02:40 PM)</td></tr>
+                    <tr><td><b>2026 අගෝස්තු 25 (අඟහරුවාදා)</b></td><td style="color: var(--neon-amber); font-weight: bold;">Accounting</td><td>Paper I (08:30 AM - 10:30 AM)</td></tr>
+                    <tr><td><b>2026 අගෝස්තු 29 (සෙනසුරාදා)</b></td><td style="color: var(--neon-purple); font-weight: bold;">Information & Communication Technology (ICT)</td><td>Paper I (01:00 PM - 03:00 PM)</td></tr>
+                    <tr><td><b>2026 අගෝස්තු 31 (සඳුදා)</b></td><td style="color: var(--neon-amber); font-weight: bold;">Accounting</td><td>Paper II (08:30 AM - 11:40 AM)</td></tr>
+                    <tr><td><b>2026 සැප්තැම්බර් 01 (අඟහරුවාදා)</b></td><td style="color: var(--neon-purple); font-weight: bold;">Information & Communication Technology (ICT)</td><td>Paper II (08:30 AM - 11:40 AM)</td></tr>
                 </tbody>
             </table>
         </div>
@@ -341,21 +341,21 @@
     <script>
         let todayStr = new Date().toISOString().split('T')[0];
         
-        // Dynamic LocalStorage migration supporting explicit paper names array
         let db = JSON.parse(localStorage.getItem("paminduLMS_v6")) || {
             BS: 0, ACC: 0, ICT: 0,
             allTimeBS: 0, allTimeACC: 0, allTimeICT: 0,
             lastScore: -1, lastOpenedDate: todayStr,
+            apiKey: "",
             tasks: [
                 { id: 1, text: "Business Studies Past Paper එකක් ලිවීම", completed: false, dateAdded: todayStr },
                 { id: 2, text: "Accounting රෙකෝඩින් එකක් බැලීම", completed: false, dateAdded: todayStr },
                 { id: 3, text: "ICT MCQ 50ක් සම්පූර්ණ කිරීම", completed: false, dateAdded: todayStr }
             ],
-            scoresHistory: [] // Array structure to store complex tracking history logs
+            scoresHistory: []
         };
 
-        // Retro-compatibility check for legacy version database conversion
         if(!db.scoresHistory) { db.scoresHistory = []; }
+        if(!db.apiKey) { db.apiKey = ""; }
 
         const examDates = [
             { name: "Business Studies (Paper I)", time: new Date("2026-08-13T08:30:00") },
@@ -370,19 +370,10 @@
         ];
 
         function updateExamCountdown() {
-            let now = new Date();
-            let nextExam = null;
-
-            for (let i = 0; i < examDates.length; i++) {
-                if (examDates[i].time > now) {
-                    nextExam = examDates[i];
-                    break;
-                }
-            }
-
+            let now = new Date(); let nextExam = null;
+            for (let i = 0; i < examDates.length; i++) { if (examDates[i].time > now) { nextExam = examDates[i]; break; } }
             let nameDisplay = document.getElementById("target-exam-name");
             let timerDisplay = document.getElementById("exam-countdown-val");
-
             if (nextExam) {
                 nameDisplay.innerText = `🎯 ඊළඟට තියෙන්නේ: ${nextExam.name} - (${nextExam.time.toLocaleDateString('en-GB')} වෙලාව: ${nextExam.time.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})})`;
                 let diff = nextExam.time - now;
@@ -391,25 +382,24 @@
                 let minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
                 let seconds = Math.floor((diff % (1000 * 60)) / 1000);
                 timerDisplay.innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-            } else {
-                nameDisplay.innerText = "🎉 සියලුම විභාග සාර්ථකව අවසන් කර ඇත! සුභ අනාගතයක්!";
-                timerDisplay.innerText = "MISSION COMPLETED 🚘";
-            }
+            } else { nameDisplay.innerText = "🎉 සියලුම විභාග සාර්ථකව අවසන් කර ඇත! සුභ අනාගතයක්!"; timerDisplay.innerText = "MISSION COMPLETED 🚘"; }
         }
 
         function updateClock() {
             let now = new Date();
-            let dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
-            let timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
-            document.getElementById("live-date").innerText = dateStr;
-            document.getElementById("live-time").innerText = timeStr;
+            document.getElementById("live-date").innerText = now.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            document.getElementById("live-time").innerText = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
             updateExamCountdown();
         }
         setInterval(updateClock, 1000);
 
         if (db.lastOpenedDate !== todayStr) {
             db.tasks.forEach(t => { if (!t.completed) { t.dateAdded = todayStr; } });
-            db.lastOpenedDate = todayStr;
+            db.lastOpenedDate = todayStr; saveDB();
+        }
+
+        function saveApiKey() {
+            db.apiKey = document.getElementById("gemini-key-input").value.trim();
             saveDB();
         }
 
@@ -417,43 +407,27 @@
             document.getElementById("hours-bs").innerText = db.BS.toFixed(1) + "h";
             document.getElementById("hours-acc").innerText = db.ACC.toFixed(1) + "h";
             document.getElementById("hours-ict").innerText = db.ICT.toFixed(1) + "h";
+            document.getElementById("gemini-key-input").value = db.apiKey || "";
 
             if (db.lastScore >= 0) {
-                let mEmoji = "💀"; let mStatus = ""; let mColor = "var(--neon-red)";
-                let s = db.lastScore;
-                if (s >= 75) {
-                    mEmoji = "🧐"; mStatus = `ලකුණු ${s}යි (Grade A). ම්ම්.. ඔහොමම කරමු. හැබැයි උඩ යන්න එපා, ඊළඟ පාර මීට වඩා ඕනේ! 🧐💪`; mColor = "var(--neon-green)";
-                } else if (s >= 65) {
-                    mEmoji = "😤"; mStatus = `ලකුණු ${s}යි (Grade B). B එකක් අරන් සතුටු වෙන්න එපා! ඕකෙන් කැම්පස් යන්න බැහැ. මැරීගෙන වැඩ කරලා A එකකට පලයන්! 😤`; mColor = "var(--neon-amber)";
-                } else if (s >= 55) {
-                    mEmoji = "🤬"; mStatus = `ලකුණු ${s}යි (Grade C). C කෑල්ලක් අරන්ද තමුසෙ ඔය ඩිෆෙන්ඩර් හීන දකින්නේ? ඕක වහලා දාලා නිදාගන්නවා ගිහින්! 🤬🔥`; mColor = "var(--neon-red)";
-                } else if (s >= 35) {
-                    mEmoji = "🤮"; mStatus = `ලකුණු ${s}යි (Grade S). S එකක්! තමුසෙට ලැජ්ජාවක් නැද්ද, පාරවල් ගානේ රස්තියාදු වෙන්නද හදන්නේ? 🤮❌`; mColor = "var(--neon-red)";
-                } else {
-                    mEmoji = "💀"; mStatus = `ලකුණු ${s}යි (Grade F). F එකක්! විභාගෙ ලඟයි, තමුසෙ නම් අනිවා අනාථයි! 💀`; mColor = "var(--neon-red)";
-                }
-                document.getElementById("mom-emoji").innerText = mEmoji;
-                document.getElementById("mom-status").innerText = mStatus;
-                document.getElementById("mom-status").style.color = mColor;
+                let mEmoji = "💀"; let mStatus = ""; let mColor = "var(--neon-red)"; let s = db.lastScore;
+                if (s >= 75) { mEmoji = "🧐"; mStatus = `ලකුණු ${s}යි (Grade A). ම්ම්.. ඔහොමම කරමු. හැබැයි උඩ යන්න එපා, ඊළඟ පාර මීට වඩා ඕනේ! 🧐💪`; mColor = "var(--neon-green)"; }
+                else if (s >= 65) { mEmoji = "😤"; mStatus = `ලකුණු ${s}යි (Grade B). B එකක් අරන් සතුටු වෙන්න එපා! ඕකෙන් කැම්පස් යන්න බැහැ. මැරීගෙන වැඩ කරලා A එකකට පලයන්! 😤`; mColor = "var(--neon-amber)"; }
+                else if (s >= 55) { mEmoji = "🤬"; mStatus = `ලකුණු ${s}යි (Grade C). C කෑල්ලක් අරන්ද තමුසෙ ඔය ඩිෆෙන්ඩර් හීන දකින්නේ? ඕක වහලා දාලා නිදාගන්නවා ගිහින්! 🤬🔥`; mColor = "var(--neon-red)"; }
+                else if (s >= 35) { mEmoji = "🤮"; mStatus = `ලකුණු ${s}යි (Grade S). S එකක්! තමුසෙට ලැජ්ජාවක් නැද්ද, පාරවල් ගානේ රස්තියාදු වෙන්නද හදන්නේ? 🤮❌`; mColor = "var(--neon-red)"; }
+                else { mEmoji = "💀"; mStatus = `ලකුණු ${s}යි (Grade F). F එකක්! විභාගෙ ලඟයි, තමුසෙ නම් අනිවා අනාථයි! 💀`; mColor = "var(--neon-red)"; }
+                document.getElementById("mom-emoji").innerText = mEmoji; document.getElementById("mom-status").innerText = mStatus; document.getElementById("mom-status").style.color = mColor;
             }
 
             let totalWeekly = db.BS + db.ACC + db.ICT;
             let fEmoji = "😭"; let fStatus = ""; let fColor = "var(--neon-red)";
-            if (totalWeekly < 2) {
-                fEmoji = "😭"; fStatus = `පැය ${totalWeekly.toFixed(1)}යි! මුළුමනින්ම කඩාවැටීමක්, විඳවන්න ලෑස්ති වෙයන්!`; fColor = "var(--neon-red)";
-            } else if (totalWeekly >= 2 && totalWeekly < 4) {
-                fEmoji = "😐"; fStatus = `පැය ${totalWeekly.toFixed(1)}යි. සාමාන්‍ය කම්මැලි මට්ටම. ඩිෆෙන්ඩර් හීන ඈතයි!`; fColor = "var(--neon-amber)";
-            } else if (totalWeekly >= 4 && totalWeekly < 6) {
-                fEmoji = "🙂"; fStatus = `පැය ${totalWeekly.toFixed(1)}යි! ශේප්, මූණේ හිනාවක් තියෙනවා. තව ටිකක් ලෝඩ් කරමු.`; fColor = "var(--neon-blue)";
-            } else {
-                fEmoji = "😎"; fStatus = `පැය ${totalWeekly.toFixed(1)}යි! සුපිරිම වැඩක්. මම උපරිම සතුටින්. Defender එක ගේට්ටුව ළඟ! 😎🚘🔥`; fColor = "var(--neon-green)";
-            }
-            document.getElementById("future-emoji").innerText = fEmoji;
-            document.getElementById("future-status").innerText = fStatus;
-            document.getElementById("future-status").style.color = fColor;
+            if (totalWeekly < 2) { fEmoji = "😭"; fStatus = `පැය ${totalWeekly.toFixed(1)}යි! මුළුමනින්ම කඩාවැටීමක්, විඳවන්න ලෑස්ති වෙයන්!`; fColor = "var(--neon-red)"; }
+            else if (totalWeekly >= 2 && totalWeekly < 4) { fEmoji = "😐"; fStatus = `පැය ${totalWeekly.toFixed(1)}යි. සාමාන්‍ය කම්මැලි මට්ටම. ඩිෆෙන්ඩර් හීන ඈතයි!`; fColor = "var(--neon-amber)"; }
+            else if (totalWeekly >= 4 && totalWeekly < 6) { fEmoji = "🙂"; fStatus = `පැය ${totalWeekly.toFixed(1)}යි! ශේප්, මූණේ හිනාවක් තියෙනවා. තව ටිකක් ලෝඩ් කරමු.`; fColor = "var(--neon-blue)"; }
+            else { fEmoji = "😎"; fStatus = `පැය ${totalWeekly.toFixed(1)}යි! සුපිරිම වැඩක්. මම උපරිම සතුටින්. Defender එක ගේට්ටුව ළඟ! 😎🚘🔥`; fColor = "var(--neon-green)"; }
+            document.getElementById("future-emoji").innerText = fEmoji; document.getElementById("future-status").innerText = fStatus; document.getElementById("future-status").style.color = fColor;
 
-            let totalTasks = db.tasks.length;
-            let completedTasks = db.tasks.filter(t => t.completed).length;
+            let totalTasks = db.tasks.length; let completedTasks = db.tasks.filter(t => t.completed).length;
             let tickPercentage = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
             document.getElementById("defender-car").style.left = (tickPercentage * 0.9) + "%";
             document.getElementById("progress-text").innerText = `${tickPercentage.toFixed(0)}% TARGET PROGRESS ACTIVATED`;
@@ -466,15 +440,13 @@
             document.getElementById("bar-all-acc").style.height = ((db.allTimeACC / maxVal) * 100) + "px";
             document.getElementById("bar-all-ict").style.height = ((db.allTimeICT / maxVal) * 100) + "px";
 
-            renderTasks();
-            renderScoreHistory(); // Redraw score tracker table updates
+            renderTasks(); renderScoreHistory();
         }
 
         function renderTasks() {
             let container = document.getElementById("task-list-box"); container.innerHTML = "";
             db.tasks.forEach(task => {
-                let div = document.createElement("div");
-                div.className = `task-item ${task.completed ? 'completed' : ''}`;
+                let div = document.createElement("div"); div.className = `task-item ${task.completed ? 'completed' : ''}`;
                 let displayDate = task.dateAdded === todayStr ? "Today" : task.dateAdded;
                 div.innerHTML = `
                     <div>
@@ -490,145 +462,49 @@
             });
         }
 
-        function toggleTask(id) {
-            let task = db.tasks.find(t => t.id === id);
-            if(task) { task.completed = !task.completed; saveDB(); updateUI(); }
-        }
-
+        function toggleTask(id) { let task = db.tasks.find(t => t.id === id); if(task) { task.completed = !task.completed; saveDB(); updateUI(); } }
         function addAdHocTask() {
-            let txt = document.getElementById("new-task-text").value;
-            let dateVal = document.getElementById("new-task-date").value || todayStr;
-            if(txt.trim() !== "") {
-                db.tasks.push({ id: Date.now(), text: txt, completed: false, dateAdded: dateVal });
-                document.getElementById("new-task-text").value = "";
-                document.getElementById("new-task-date").value = todayStr;
-                saveDB(); updateUI();
-            }
+            let txt = document.getElementById("new-task-text").value; let dateVal = document.getElementById("new-task-date").value || todayStr;
+            if(txt.trim() !== "") { db.tasks.push({ id: Date.now(), text: txt, completed: false, dateAdded: dateVal }); document.getElementById("new-task-text").value = ""; document.getElementById("new-task-date").value = todayStr; saveDB(); updateUI(); }
         }
-
-        function deleteTask(id) {
-            db.tasks = db.tasks.filter(t => t.id !== id);
-            saveDB(); updateUI();
-        }
-
+        function deleteTask(id) { db.tasks = db.tasks.filter(t => t.id !== id); saveDB(); updateUI(); }
         function addManualHours() {
-            let sub = document.getElementById("log-subject").value;
-            let amt = parseFloat(document.getElementById("log-amount").value);
-            if (!isNaN(amt) && amt > 0) {
-                db[sub] += amt; db["allTime" + sub] += amt; saveDB(); updateUI();
-                document.getElementById("log-amount").value = "";
-            }
+            let sub = document.getElementById("log-subject").value; let amt = parseFloat(document.getElementById("log-amount").value);
+            if (!isNaN(amt) && amt > 0) { db[sub] += amt; db["allTime" + sub] += amt; saveDB(); updateUI(); document.getElementById("log-amount").value = ""; }
         }
 
-        let countdownInterval; let isPaused = false;
-        let totalSecondsAllocated = 0; let remainingSeconds = 0; let activeTimerSubject = "None";
-
+        let countdownInterval; let isPaused = false; let totalSecondsAllocated = 0; let remainingSeconds = 0; let activeTimerSubject = "None";
         function startPaperTimer() {
-            let durationMins = parseFloat(document.getElementById("timer-duration").value);
-            if (isNaN(durationMins) || durationMins <= 0) return alert("කාලය හරියට දාපන් මචන්!");
-            activeTimerSubject = document.getElementById("timer-subject").value;
-            totalSecondsAllocated = Math.round(durationMins * 60); remainingSeconds = totalSecondsAllocated; isPaused = false;
-            document.getElementById("timerOverlay").style.display = "flex";
-            countdownInterval = setInterval(runOverlayTimer, 1000);
+            let durationMins = parseFloat(document.getElementById("timer-duration").value); if (isNaN(durationMins) || durationMins <= 0) return alert("කාලය හරියට දාපන් මචන්!");
+            activeTimerSubject = document.getElementById("timer-subject").value; totalSecondsAllocated = Math.round(durationMins * 60); remainingSeconds = totalSecondsAllocated; isPaused = false;
+            document.getElementById("timerOverlay").style.display = "flex"; countdownInterval = setInterval(runOverlayTimer, 1000);
         }
-
         function runOverlayTimer() {
             if (isPaused) return; remainingSeconds--;
             let mins = Math.floor(remainingSeconds / 60); let secs = remainingSeconds % 60;
             document.getElementById("bigTimerDisplay").innerText = (mins < 10 ? "0"+mins : mins) + ":" + (secs < 10 ? "0"+secs : secs);
-            if (remainingSeconds <= 0) {
-                clearInterval(countdownInterval); 
-                if (document.fullscreenElement) { document.exitFullscreen().catch(()=>{}); }
-                document.getElementById("timerOverlay").style.display = "none";
-                let hrs = totalSecondsAllocated / 3600;
-                if (activeTimerSubject !== "None") { db[activeTimerSubject] += hrs; db["allTime" + activeTimerSubject] += hrs; }
-                saveDB(); updateUI();
-            }
+            if (remainingSeconds <= 0) { clearInterval(countdownInterval); if (document.fullscreenElement) { document.exitFullscreen().catch(()=>{}); } document.getElementById("timerOverlay").style.display = "none"; let hrs = totalSecondsAllocated / 3600; if (activeTimerSubject !== "None") { db[activeTimerSubject] += hrs; db["allTime" + activeTimerSubject] += hrs; } saveDB(); updateUI(); }
         }
-
         function togglePauseTimer() { isPaused = !isPaused; document.getElementById("pauseBtn").innerText = isPaused ? "RESUME" : "PAUSE"; }
-        
-        function stopAndSaveTimer() {
-            clearInterval(countdownInterval); 
-            if (document.fullscreenElement) { document.exitFullscreen().catch(()=>{}); }
-            document.getElementById("timerOverlay").style.display = "none";
-            let done = totalSecondsAllocated - remainingSeconds;
-            if (done > 0 && activeTimerSubject !== "None") {
-                let hrs = done / 3600; db[activeTimerSubject] += hrs; db["allTime" + activeTimerSubject] += hrs; saveDB(); updateUI();
-            }
-        }
+        function stopAndSaveTimer() { clearInterval(countdownInterval); if (document.fullscreenElement) { document.exitFullscreen().catch(()=>{}); } document.getElementById("timerOverlay").style.display = "none"; let done = totalSecondsAllocated - remainingSeconds; if (done > 0 && activeTimerSubject !== "None") { let hrs = done / 3600; db[activeTimerSubject] += hrs; db["allTime" + activeTimerSubject] += hrs; saveDB(); updateUI(); } }
+        function exitWithoutSaving() { if (confirm("සැසිය සේව් නොකර ඉවත් වෙන්නද බං ඕනේ?")) { clearInterval(countdownInterval); if (document.fullscreenElement) { document.exitFullscreen().catch(()=>{}); } document.getElementById("timerOverlay").style.display = "none"; } }
+        function toggleFullscreen() { let overlay = document.getElementById("timerOverlay"); if (!document.fullscreenElement) { overlay.requestFullscreen().catch(err => { alert(`Fullscreen වැරදුණා: ${err.message}`); }); } else { document.exitFullscreen(); } }
 
-        function exitWithoutSaving() {
-            if (confirm("සැසිය සේව් නොකර ඉවත් වෙන්නද බං ඕනේ?")) {
-                clearInterval(countdownInterval);
-                if (document.fullscreenElement) { document.exitFullscreen().catch(()=>{}); }
-                document.getElementById("timerOverlay").style.display = "none";
-            }
-        }
-
-        function toggleFullscreen() {
-            let overlay = document.getElementById("timerOverlay");
-            if (!document.fullscreenElement) { overlay.requestFullscreen().catch(err => { alert(`Fullscreen වැරදුණා: ${err.message}`); }); } 
-            else { document.exitFullscreen(); }
-        }
-
-        // ENHANCED SCORE SAVING LOGIC WITH CUSTOM NAMES
         function savePaperScore() {
-            let pName = document.getElementById("score-paper-name").value.trim();
-            let sub = document.getElementById("score-subject").value;
-            let val = parseInt(document.getElementById("score-value").value);
-            
-            if(pName === "") {
-                alert("අනේ මචං, පේපර් එක අඳුරගන්න නමක් දාපන්! (Ex: 2024 ICT Paper I)");
-                return;
-            }
-            if(isNaN(val) || val < 0 || val > 100) {
-                alert("ලකුණු 0ත් 100ත් අතර නිවැරදි අගයක් දාපන්!");
-                return;
-            }
-
-            // Append to central state engine array
-            db.scoresHistory.push({
-                id: Date.now(),
-                paperName: pName,
-                subject: sub,
-                score: val
-            });
-
-            db.lastScore = val; 
-            saveDB(); 
-            updateUI(); 
-            
-            // Clean up inputs
-            document.getElementById("score-paper-name").value = "";
-            document.getElementById("score-value").value = "";
+            let pName = document.getElementById("score-paper-name").value.trim(); let sub = document.getElementById("score-subject").value; let val = parseInt(document.getElementById("score-value").value);
+            if(pName === "") return alert("අනේ මචං, පේපර් එක අඳුරගන්න නමක් දාපන්! (Ex: 2024 ICT Paper I)");
+            if(isNaN(val) || val < 0 || val > 100) return alert("ලකුණු 0ත් 100ත් අතර නිවැරදි අගයක් දාපන්!");
+            db.scoresHistory.push({ id: Date.now(), paperName: pName, subject: sub, score: val }); db.lastScore = val; saveDB(); updateUI();
+            document.getElementById("score-paper-name").value = ""; document.getElementById("score-value").value = "";
         }
 
-        // RENDER SCORE HISTORY RUNTIME ENGINE
         function renderScoreHistory() {
-            let tbody = document.getElementById("score-history-tbody");
-            tbody.innerHTML = "";
-
-            if(db.scoresHistory.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#6b7280;">තවම ලකුණු ඇතුළත් කර නැත!</td></tr>`;
-                return;
-            }
-
-            // Loop in reverse to display latest records at top
+            let tbody = document.getElementById("score-history-tbody"); tbody.innerHTML = "";
+            if(db.scoresHistory.length === 0) { tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#6b7280;">තවම ලකුණු ඇතුළත් කර නැත!</td></tr>`; return; }
             for(let i = db.scoresHistory.length - 1; i >= 0; i--) {
-                let record = db.scoresHistory[i];
-                let tr = document.createElement("tr");
-                
-                let subColor = "var(--neon-blue)";
-                if(record.subject === "ACC") subColor = "var(--neon-amber)";
-                if(record.subject === "ICT") subColor = "var(--neon-purple)";
-
-                tr.innerHTML = `
-                    <td style="font-weight:bold; max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${record.paperName}</td>
-                    <td style="color:${subColor}; font-weight:bold;">${record.subject}</td>
-                    <td style="font-family:monospace; color:var(--neon-green); font-weight:bold;">${record.score}</td>
-                    <td><button class="btn-delete" style="font-size:0.9rem;" onclick="deleteScoreRecord(${record.id})">🗑️</button></td>
-                `;
+                let record = db.scoresHistory[i]; let tr = document.createElement("tr"); let subColor = "var(--neon-blue)";
+                if(record.subject === "ACC") subColor = "var(--neon-amber)"; if(record.subject === "ICT") subColor = "var(--neon-purple)";
+                tr.innerHTML = `<td style="font-weight:bold; max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${record.paperName}</td><td style="color:${subColor}; font-weight:bold;">${record.subject}</td><td style="font-family:monospace; color:var(--neon-green); font-weight:bold;">${record.score}</td><td><button class="btn-delete" style="font-size:0.9rem;" onclick="deleteScoreRecord(${record.id})">🗑️</button></td>`;
                 tbody.appendChild(tr);
             }
         }
@@ -636,22 +512,61 @@
         function deleteScoreRecord(id) {
             if(confirm("මේ ලකුණු Record එක මැකීමට අවශ්‍යද?")) {
                 db.scoresHistory = db.scoresHistory.filter(r => r.id !== id);
-                if(db.scoresHistory.length > 0) {
-                    db.lastScore = db.scoresHistory[db.scoresHistory.length - 1].score;
-                } else {
-                    db.lastScore = -1;
-                }
+                if(db.scoresHistory.length > 0) { db.lastScore = db.scoresHistory[db.scoresHistory.length - 1].score; } else { db.lastScore = -1; }
                 saveDB(); updateUI();
             }
         }
 
+        // --- CORE LIVE GEMINI ENGINE CONNECTOR ---
+        async function callGeminiAPI(promptText) {
+            if (!db.apiKey) { alert("කරුණාකර මුලින්ම Gemini API Key එකක් ඇතුළත් කරන්න මචං!"); return null; }
+            document.getElementById("ai-loading-text").style.display = "block";
+            
+            let systemContext = `You are Pamindu's brutal, motivational, and highly analytical AI Study Coach for G.C.E Advanced Level Commerce stream. 
+            Respond in a friendly, brotherly, motivating Sinhala language (mixed with light English terms, standard Sri Lankan student slang style).
+            Here is Pamindu's real-time system database state:
+            - Weekly Study Hours: Business Studies: ${db.BS.toFixed(1)}h, Accounting: ${db.ACC.toFixed(1)}h, ICT: ${db.ICT.toFixed(1)}h
+            - All-time cumulative hours logged: BS: ${db.allTimeBS.toFixed(1)}h, ACC: ${db.allTimeACC.toFixed(1)}h, ICT: ${db.allTimeICT.toFixed(1)}h
+            - Recent Past Paper Scores: ${JSON.stringify(db.scoresHistory)}
+            - Current Uncompleted Tasks: ${JSON.stringify(db.tasks.filter(t => !t.completed))}
+            Give solid, strategic study advice or answers based exactly on his status. Do not talk about external things unless relevant to helping him pass the exam and buy his dream Land Rover Defender. Keep responses structured and concise.`;
+
+            try {
+                let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${db.apiKey}`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: systemContext + "\n\nUser Question: " + promptText }] }] })
+                });
+                let data = await response.json();
+                document.getElementById("ai-loading-text").style.display = "none";
+                return data.candidates[0].content.parts[0].text;
+            } catch (err) {
+                document.getElementById("ai-loading-text").style.display = "none";
+                alert("API Error එකක් ආවා! Key එක නිවැරදිද කියා පරීක්ෂා කරන්න.");
+                return null;
+            }
+        }
+
+        async function askGemini() {
+            let inputField = document.getElementById("ai-user-query"); let text = inputField.value.trim(); if (!text) return;
+            appendMessage(text, "user"); inputField.value = "";
+            let aiRes = await callGeminiAPI(text); if (aiRes) appendMessage(aiRes, "ai");
+        }
+
+        async function analyzeProgressWithAI() {
+            appendMessage("මගේ සම්පූර්ණ ප්‍රගතිය විග්‍රහ කරලා ප්ලෑන් එකක් දියන් මචං.", "user");
+            let aiRes = await callGeminiAPI("Give me a comprehensive status report, point out my weaknesses based on my logged hours/marks, and tell me exactly what my next tactical study moves should be today.");
+            if (aiRes) appendMessage(aiRes, "ai");
+        }
+
+        function appendMessage(txt, sender) {
+            let box = document.getElementById("chat-box"); let div = document.createElement("div"); div.className = `msg ${sender}`;
+            div.innerText = txt; box.appendChild(div); box.scrollTop = box.scrollHeight;
+        }
+
         function saveDB() { localStorage.setItem("paminduLMS_v6", JSON.stringify(db)); }
         
-        window.onload = function() { 
-            document.getElementById("new-task-date").value = todayStr;
-            updateClock();
-            updateUI(); 
-        };
+        window.onload = function() { document.getElementById("new-task-date").value = todayStr; updateClock(); updateUI(); };
     </script>
 </body>
 </html>
