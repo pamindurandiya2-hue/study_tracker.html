@@ -96,12 +96,23 @@
             border: 1px solid rgba(255,255,255,0.08); padding: 12px; text-align: left;
         }
         .timetable-table th { background: rgba(255,255,255,0.03); color: var(--neon-blue); }
+
+        /* Countdown Box Styling */
+        .countdown-container {
+            background: linear-gradient(135deg, #12031c, #05020a);
+            border: 1px solid var(--neon-purple);
+            padding: 15px; border-radius: 12px; text-align: center; margin-bottom: 20px;
+            box-shadow: 0 0 15px rgba(189, 0, 255, 0.2);
+        }
+        .countdown-timer {
+            font-family: monospace; font-size: 1.8rem; font-weight: bold; color: var(--neon-green);
+            text-shadow: 0 0 10px rgba(0, 255, 102, 0.5); margin-top: 5px;
+        }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <!-- Header with Live Clock -->
         <div class="cyber-header">
             <div>
                 <h1 style="margin:0; font-weight:800; letter-spacing:1px;">PAMINDU'S CORE STUDYSYNC LAB</h1>
@@ -113,16 +124,20 @@
             </div>
         </div>
 
+        <div class="countdown-container">
+            <span style="font-size: 0.85rem; color: var(--neon-purple); font-weight: bold; letter-spacing: 1px; text-transform: uppercase;">⏱️ NEXT CLOSER EXAM COUNTDOWN</span>
+            <div id="target-exam-name" style="font-size: 1.1rem; font-weight: bold; color: white; margin-top: 3px;">Loading next exam...</div>
+            <div class="countdown-timer" id="exam-countdown-val">00d 00h 00m 00s</div>
+        </div>
+
         <div class="main-grid">
             <div class="left-column">
-                <!-- Subject Cards -->
                 <div class="subject-row">
                     <div class="sub-card bg-bs"><h4>Business Studies</h4><div class="hours-val" id="hours-bs">0.0h</div></div>
                     <div class="sub-card bg-acc"><h4>Accounting</h4><div class="hours-val" id="hours-acc">0.0h</div></div>
                     <div class="sub-card bg-ict"><h4>ICT</h4><div class="hours-val" id="hours-ict">0.0h</div></div>
                 </div>
 
-                <!-- Defender Track Tracker -->
                 <div class="panel">
                     <h3 style="margin-top:0; color:var(--neon-blue);">🚘 LAND ROVER DEFENDER DRIVE TRACK</h3>
                     <div class="highway-track">
@@ -132,7 +147,6 @@
                     <p id="progress-text" style="text-align:center; margin-top:15px; font-weight:bold; color:var(--neon-green);">0% TARGET PROGRESS INJECTED</p>
                 </div>
 
-                <!-- Smart Target Box with Advanced Date Scheduler & Delete -->
                 <div class="panel">
                     <h3 style="margin-top:0; color:var(--neon-amber);">📅 TODAY'S COMPILATION LIST (මේ ටික ඉවරකරපන් බොරුව නොදා!)</h3>
                     <div id="task-list-box"></div>
@@ -144,7 +158,6 @@
                     </div>
                 </div>
 
-                <!-- Hardcore Paper practices -->
                 <div class="panel">
                     <h3 style="margin-top:0; color:var(--neon-red);">⏱️ PRACTICE SESSION TIMER OVERLAY</h3>
                     <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
@@ -159,7 +172,6 @@
                     <button style="background:linear-gradient(90deg, #ff0055, #aa0033); border:none; font-weight:bold; cursor:pointer; margin-top:15px;" onclick="startPaperTimer()">LAUNCH FOCUS MODE</button>
                 </div>
 
-                <!-- Log inputs -->
                 <div class="panel">
                     <h3 style="margin-top:0;">➕ LOG STUDY / RECORDING HOURS MANUALLY</h3>
                     <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
@@ -174,23 +186,19 @@
                 </div>
             </div>
 
-            <!-- Right Column -->
             <div class="right-column">
-                <!-- AMMA GRADE REACTION -->
                 <div class="panel" style="text-align:center; border:1px solid var(--neon-red); background:#120206;">
                     <h3 style="margin:0; font-size:0.85rem; color:var(--neon-red); letter-spacing:1px;">🚨 AMMA'S BRUTAL MARKS REACTION (A B C S F)</h3>
                     <div id="mom-emoji" style="font-size:4.5rem; margin:15px 0;">😐</div>
                     <h3 id="mom-status" style="margin:5px 0; font-size:1.05rem; line-height:1.5;">ලකුණු දාලා බලමුකෝ තමුසෙගේ තත්ත්වේ!</h3>
                 </div>
 
-                <!-- PAMINDU HOURS REACTION -->
                 <div class="panel" style="text-align:center; border:1px solid var(--neon-purple); background:#090212;">
                     <h3 style="margin:0; font-size:0.85rem; color:var(--neon-purple); letter-spacing:1px;">⏳ MY PROGRESS MOOD (වැඩ වැඩිවෙනකොට හිනාවෙන)</h3>
                     <div id="future-emoji" style="font-size:4.5rem; margin:15px 0;">😭</div>
-                    <h3 id="future-status" style="margin:5px 0; font-size:1.05rem; line-height:1.5;">පැය ගණන මදි!</h3>
+                    <h3 id="future-status" style="margin:5px 0; font-size:1.05rem; line-height:1.5;">පැය ගණන madi!</h3>
                 </div>
 
-                <!-- Score Logging (With Subject Wise Selection) -->
                 <div class="panel">
                     <h3 style="margin-top:0; color:var(--neon-green);">📊 LOG PAST PAPER SCORE</h3>
                     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom: 5px;">
@@ -204,7 +212,6 @@
                     <button class="btn-primary" style="background:linear-gradient(90deg, #00ff66, #00aa44); color:#000;" onclick="savePaperScore()">SUBMIT SCORE</button>
                 </div>
 
-                <!-- Multibar Custom Chart Layout -->
                 <div class="panel">
                     <h3 style="margin-top:0;">📈 ACADEMIC MULTI-BARS (BS / ACC / ICT)</h3>
                     <div class="chart-wrap">
@@ -236,40 +243,63 @@
             </div>
         </div>
 
-        <!-- 2026 G.C.E. A/L EXAM TIMETABLE PANEL -->
         <div class="panel" style="border-top: 4px solid var(--neon-purple);">
-            <h3 style="margin-top:0; color:var(--neon-purple);">📅 G.C.E. ADVANCED LEVEL 2026 EXAM TIMETABLE</h3>
-            <p style="font-size:0.85rem; margin: -5px 0 15px 0; color: #a1a1aa;">විභාගය ආරම්භ වන දිනය: <b>2026 අගෝස්තු 10</b></p>
+            <h3 style="margin-top:0; color:var(--neon-purple);">📅 G.C.E. ADVANCED LEVEL 2026 OFFICIAL TIMETABLE</h3>
+            <p style="font-size:0.85rem; margin: -5px 0 15px 0; color: #a1a1aa;">විභාග කාලසටහන නිල දත්තයන්ට අනුව යාවත්කාලීන කර ඇත.</p>
             <table class="timetable-table">
                 <thead>
                     <tr>
+                        <th>Date (දිනය)</th>
                         <th>Subject (විෂයය)</th>
-                        <th>Paper</th>
-                        <th>Time (වේලාව)</th>
+                        <th>Paper Details & Time (වේලාව)</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
+                        <td><b>2026 අගෝස්තු 13 (බ්‍රහස්පතින්දා)</b></td>
                         <td style="color: var(--neon-blue); font-weight: bold;">Business Studies</td>
-                        <td>Paper I & II</td>
-                        <td>08:30 AM - 11:40 AM / 01:00 PM - 04:10 PM</td>
+                        <td>Paper I (08:30 AM - 10:30 AM)</td>
                     </tr>
                     <tr>
+                        <td><b>2026 අගෝස්තු 17 (සඳුදා)</b></td>
+                        <td style="color: var(--neon-blue); font-weight: bold;">Business Studies</td>
+                        <td>Paper II (01:00 PM - 04:10 PM)</td>
+                    </tr>
+                    <tr>
+                        <td><b>2026 අගෝස්තු 21 (සිකුරාදා)</b></td>
+                        <td style="color: #00ff66; font-weight: bold;">Common General Test (පොදු පරීක්ෂණය)</td>
+                        <td>08:30 AM - 10:30 AM</td>
+                    </tr>
+                    <tr>
+                        <td><b>2026 අගෝස්තු 22 (සෙනසුරාදා)</b></td>
+                        <td style="color: #e2f516; font-weight: bold;">General English</td>
+                        <td>Paper II (08:30 AM - 11:40 AM) <br> Paper I (01:00 PM - 02:40 PM)</td>
+                    </tr>
+                    <tr>
+                        <td><b>2026 අගෝස්තු 25 (අඟහරුවාදා)</b></td>
                         <td style="color: var(--neon-amber); font-weight: bold;">Accounting</td>
-                        <td>Paper I & II</td>
-                        <td>08:30 AM - 11:40 AM / 01:00 PM - 04:10 PM</td>
+                        <td>Paper I (08:30 AM - 10:30 AM)</td>
                     </tr>
                     <tr>
+                        <td><b>2026 අගෝස්තු 29 (සෙනසුරාදා)</b></td>
                         <td style="color: var(--neon-purple); font-weight: bold;">Information & Communication Technology (ICT)</td>
-                        <td>Paper I & II</td>
-                        <td>08:30 AM - 10:40 AM / 01:00 PM - 04:10 PM</td>
+                        <td>Paper I (01:00 PM - 03:00 PM)</td>
+                    </tr>
+                    <tr>
+                        <td><b>2026 අගෝස්තු 31 (සඳුදා)</b></td>
+                        <td style="color: var(--neon-amber); font-weight: bold;">Accounting</td>
+                        <td>Paper II (08:30 AM - 11:40 AM)</td>
+                    </tr>
+                    <tr>
+                        <td><b>2026 සැප්තැම්බර් 01 (අඟහරුවාදා)</b></td>
+                        <td style="color: var(--neon-purple); font-weight: bold;">Information & Communication Technology (ICT)</td>
+                        <td>Paper II (08:30 AM - 11:40 AM)</td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
 
-    <!-- TIMER OVERLAY -->
     <div id="timerOverlay" class="overlay">
         <div style="color:var(--neon-red); font-size:1.8rem; font-weight:bold; letter-spacing:2px;">🚨 FOCUS MODE ACTIVE</div>
         <div id="bigTimerDisplay" style="font-size:9rem; font-weight:900; font-family:monospace; margin:20px 0; text-shadow:0 0 30px var(--neon-red);">00:00</div>
@@ -298,6 +328,53 @@
             ]
         };
 
+        // Official Exam Schedule Data Matrix
+        const examDates = [
+            { name: "Business Studies (Paper I)", time: new Date("2026-08-13T08:30:00") },
+            { name: "Business Studies (Paper II)", time: new Date("2026-08-17T13:00:00") },
+            { name: "Common General Test (පොදු පරීක්ෂණය)", time: new Date("2026-08-21T08:30:00") },
+            { name: "General English (Paper II)", time: new Date("2026-08-22T08:30:00") },
+            { name: "General English (Paper I)", time: new Date("2026-08-22T13:00:00") },
+            { name: "Accounting (Paper I)", time: new Date("2026-08-25T08:30:00") },
+            { name: "Information & Communication Technology (ICT - Paper I)", time: new Date("2026-08-29T13:00:00") },
+            { name: "Accounting (Paper II)", time: new Date("2026-08-31T08:30:00") },
+            { name: "Information & Communication Technology (ICT - Paper II)", time: new Date("2026-09-01T08:30:00") }
+        ];
+
+        // Intelligent Next Closer Exam Engine
+        function updateExamCountdown() {
+            let now = new Date();
+            let nextExam = null;
+
+            // Find the closest future exam session
+            for (let i = 0; i < examDates.length; i++) {
+                if (examDates[i].time > now) {
+                    nextExam = examDates[i];
+                    break;
+                }
+            }
+
+            let nameDisplay = document.getElementById("target-exam-name");
+            let timerDisplay = document.getElementById("exam-countdown-val");
+
+            if (nextExam) {
+                nameDisplay.innerText = `🎯 ඊළඟට තියෙන්නේ: ${nextExam.name} - (${nextExam.time.toLocaleDateString('en-GB')} වෙලාව: ${nextExam.time.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})})`;
+                
+                let diff = nextExam.time - now;
+                let days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                let hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                let minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                let seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                timerDisplay.innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+                timerDisplay.style.color = "var(--neon-green)";
+            } else {
+                nameDisplay.innerText = "🎉 සියලුම විභාග සාර්ථකව අවසන් කර ඇත! සුභ අනාගතයක්!";
+                timerDisplay.innerText = "MISSION COMPLETED 🚘";
+                timerDisplay.style.color = "var(--neon-blue)";
+            }
+        }
+
         // Live Clock Implementation
         function updateClock() {
             let now = new Date();
@@ -306,6 +383,8 @@
             
             document.getElementById("live-date").innerText = dateStr;
             document.getElementById("live-time").innerText = timeStr;
+            
+            updateExamCountdown(); // Kept inside 1s interval sync for rock-solid timing
         }
         setInterval(updateClock, 1000);
 
@@ -381,7 +460,6 @@
         function renderTasks() {
             let container = document.getElementById("task-list-box"); container.innerHTML = "";
             
-            // Render tasks sorting by date to track upcoming items easily
             db.tasks.forEach(task => {
                 let div = document.createElement("div");
                 div.className = `task-item ${task.completed ? 'completed' : ''}`;
@@ -492,7 +570,6 @@
 
         function savePaperScore() {
             let val = parseInt(document.getElementById("score-value").value);
-            // Even though subject selector is active, keeping dashboard metric synchronized safely
             if(!isNaN(val)) { db.lastScore = val; saveDB(); updateUI(); document.getElementById("score-value").value = ""; }
         }
 
