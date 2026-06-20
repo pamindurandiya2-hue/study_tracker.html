@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pamindu's A/L Success Dashboard</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent-color: #ef4444;
+            --text-color: #f8fafc;
+            --text-muted: #94a3b8;
+            --success-color: #10b981;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        h1, h2, h3 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Countdown Style */
+        .countdown-card {
+            background: linear-gradient(135deg, #1e1b4b, #311042);
+            border: 2px solid var(--accent-color);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.2);
+        }
+
+        .countdown-title {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .timer-display {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .timer-box {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 15px;
+            border-radius: 10px;
+            min-width: 80px;
+        }
+
+        .timer-box span {
+            display: block;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+
+        .timer-box label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* Grid Layout */
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        /* Table Style */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+
+        th {
+            color: var(--accent-color);
+        }
+
+        /* Input Controls */
+        input, button, textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 8px;
+            border: 1px solid #475569;
+            background-color: #0f172a;
+            color: white;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: var(--accent-color);
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        /* Todo List */
+        .todo-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #0f172a;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 6px;
+        }
+
+        .todo-item input[type="checkbox"] {
+            width: auto;
+        }
+
+        .completed {
+            text-decoration: line-through;
+            color: var(--text-muted);
+        }
+
+        .log-display {
+            font-size: 1.5rem;
+            text-align: center;
+            color: var(--success-color);
+            font-weight: bold;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>🚀 PAMINDU'S A/L TARGET: DIST TOP 100</h1>
+
+        <!-- FULL COUNTDOWN SECTION -->
+        <div class="countdown-card">
+            <div class="countdown-title">🔔 පළමු විභාගයට (BS I - අගෝස්තු 13) තව තියෙන්නේ:</div>
+            <div class="timer-display">
+                <div class="timer-box"><span id="days">00</span><label>දින</label></div>
+                <div class="timer-box"><span id="hours">00</span><label>පැය</label></div>
+                <div class="timer-box"><span id="minutes">00</span><label>විනාඩි</label></div>
+                <div class="timer-box"><span id="seconds">00</span><label>තත්පර</label></div>
+            </div>
+        </div>
+
+        <div class="grid">
+            <!-- TIMETABLE CARD -->
+            <div class="card">
+                <h3>📅 නිල විභාග කාලසටහන</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>විෂය / පත්‍රය</th>
+                            <th>දිනය</th>
+                            <th>වේලාව</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Business Studies I</td><td>අගෝස්තු 13</td><td>08:30 - 10:30</td></tr>
+                        <tr><td>Business Studies II</td><td>අගෝස්තු 17</td><td>13:00 - 16:10</td></tr>
+                        <tr><td>Common General Test</td><td>අගෝස්තු 21</td><td>08:30 - 10:30</td></tr>
+                        <tr><td>General English (I & II)</td><td>අගෝස්තු 22</td><td>08:30 - 14:00</td></tr>
+                        <tr><td>Accounting I</td><td>අගෝස්තු 25</td><td>08:30 - 11:40</td></tr>
+                        <tr><td>ICT I (MCQ)</td><td>අගෝස්තු 29</td><td>13:00 - 15:00</td></tr>
+                        <tr><td>Accounting II</td><td>අගෝස්තු 31</td><td>08:30 - 11:40</td></tr>
+                        <tr><td>ICT II (Essay)</td><td>සැප්තැම්බර් 01</td><td>08:30 - 11:40</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- STUDY LOG AND TODO CARD -->
+            <div class="card">
+                <h3>📊 Daily Study Hours Tracker</h3>
+                <label>අද දවසේ පාඩම් කරපු මුළු පැය ගණන ඇතුළත් කරන්න:</label>
+                <input type="number" id="studyHoursInput" placeholder="Ex: 8" min="0" max="24">
+                <button onclick="saveStudyHours()">Save Hours</button>
+                <div class="log-display" id="savedHoursDisplay">අද දවසේ එකතුව: 0 පැය</div>
+
+                <hr style="border-color: #334155; margin: 20px 0;">
+
+                <h3>📝 ⚡ Today's Targets / Todo List</h3>
+                <div style="display: flex; gap: 5px;">
+                    <input type="text" id="todoInput" placeholder="කරන්න ඕන වැඩක් ඇතුළත් කරන්න...">
+                    <button style="width: auto;" onclick="addTodo()">Add</button>
+                </div>
+                <div id="todoList"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. LIVE COUNTDOWN TIMER (Target: August 13, 2026 08:30:00)
+        const examDate = new Date("August 13, 2026 08:30:00").getTime();
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = examDate - now;
+
+            const d = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("days").innerText = d < 10 ? "0" + d : d;
+            document.getElementById("hours").innerText = h < 10 ? "0" + h : h;
+            document.getElementById("minutes").innerText = m < 10 ? "0" + m : m;
+            document.getElementById("seconds").innerText = s < 10 ? "0" + s : s;
+
+            if (distance < 0) {
+                clearInterval(timerInterval);
+                document.querySelector(".countdown-title").innerText = "විභාගය ආරම්භ වී ඇත! උපරිමයෙන් කරපන්!";
+            }
+        }
+        const timerInterval = setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        // 2. STORAGE MANAGEMENT FOR STUDY HOURS
+        function saveStudyHours() {
+            const hours = document.getElementById("studyHoursInput").value;
+            if(hours !== "") {
+                localStorage.setItem("savedStudyHours", hours);
+                displayHours();
+                alert("Study hours සුරැකිව තබාගන්නා ලදී! නියමයි මචන්!");
+            }
+        }
+
+        function displayHours() {
+            const storedHours = localStorage.getItem("savedStudyHours") || "0";
+            document.getElementById("savedHoursDisplay").innerText = "අද දවසේ එකතුව: " + storedHours + " පැය";
+            document.getElementById("studyHoursInput").value = storedHours;
+        }
+
+        // 3. STORAGE MANAGEMENT FOR TODO LIST
+        function loadTodos() {
+            const todos = JSON.parse(localStorage.getItem("dashboardTodos")) || [];
+            const listContainer = document.getElementById("todoList");
+            listContainer.innerHTML = "";
+            todos.forEach((todo, index) => {
+                const item = document.createElement("div");
+                item.className = "todo-item";
+                item.innerHTML = `
+                    <input type="checkbox" ${todo.completed ? 'checked' : ''} onchange="toggleTodo(${index})">
+                    <span class="${todo.completed ? 'completed' : ''}">${todo.text}</span>
+                    <span style="margin-left:auto; color:#ef4444; cursor:pointer;" onclick="deleteTodo(${index})">❌</span>
+                `;
+                listContainer.appendChild(item);
+            });
+        }
+
+        function addTodo() {
+            const text = document.getElementById("todoInput").value;
+            if (text.trim() !== "") {
+                const todos = JSON.parse(localStorage.getItem("dashboardTodos")) || [];
+                todos.push({ text: text, completed: false });
+                localStorage.setItem("dashboardTodos", JSON.stringify(todos));
+                document.getElementById("todoInput").value = "";
+                loadTodos();
+            }
+        }
+
+        function toggleTodo(index) {
+            const todos = JSON.parse(localStorage.getItem("dashboardTodos"));
+            todos[index].completed = !todos[index].completed;
+            localStorage.setItem("dashboardTodos", JSON.stringify(todos));
+            loadTodos();
+        }
+
+        function deleteTodo(index) {
+            const todos = JSON.parse(localStorage.getItem("dashboardTodos"));
+            todos.splice(index, 1);
+            localStorage.setItem("dashboardTodos", JSON.stringify(todos));
+            loadTodos();
+        }
+
+        // INITIAL LOAD ON REFRESH
+        window.onload = function() {
+            displayHours();
+            loadTodos();
+        }
+    </script>
+</body>
+</html>
