@@ -6,23 +6,24 @@
     <title>Pamindu's A/L Success LMS</title>
     <style>
         :root {
-            --bg-dark: #0b0f19;
-            --panel-bg: #131c2e;
+            --bg-dark: #0a0f1d;
+            --panel-bg: #141b2d;
             --bs-color: #3b82f6;
             --acc-color: #f59e0b;
             --ict-color: #8b5cf6;
             --accent-red: #ef4444;
             --text-main: #f8fafc;
-            --text-muted: #64748b;
+            --text-muted: #94a3b8;
             --success: #10b981;
         }
 
         body {
             font-family: 'Segoe UI', system-ui, sans-serif;
-            background-color: var(--bg-dark);
+            background: radial-gradient(circle at top, #1e1e38 0%, #0a0f1d 70%);
             color: var(--text-main);
             margin: 0;
             padding: 20px;
+            min-height: 100vh;
         }
 
         .container {
@@ -30,29 +31,21 @@
             margin: 0 auto;
         }
 
-        /* Top Header & Vision */
+        /* Top Header */
         .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             background: linear-gradient(90deg, #1e293b, #0f172a);
             padding: 20px;
             border-radius: 12px;
-            border-left: 5px solid var(--accent-red);
+            border-left: 5px solid var(--bs-color);
             margin-bottom: 20px;
-        }
-
-        .vision-text {
-            font-size: 0.9rem;
-            color: #fbbf24;
-            font-weight: bold;
-            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
         /* Auto Countdown Card */
         .countdown-section {
-            background: radial-gradient(circle at top right, #1e1b4b, #0f172a);
-            border: 1px solid #334155;
+            background: rgba(20, 27, 45, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid #2d3748;
             padding: 25px;
             border-radius: 15px;
             text-align: center;
@@ -68,10 +61,10 @@
         }
 
         .time-box {
-            background: rgba(0,0,0,0.3);
+            background: rgba(0,0,0,0.4);
             padding: 15px;
             border-radius: 10px;
-            min-width: 75px;
+            min-width: 80px;
             border-bottom: 3px solid var(--accent-red);
         }
 
@@ -99,6 +92,7 @@
             border-radius: 12px;
             padding: 20px;
             border: 1px solid #1e293b;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
         /* Subjects Dashboard Row */
@@ -110,14 +104,15 @@
         }
 
         .sub-card {
-            padding: 15px;
-            border-radius: 10px;
+            padding: 20px;
+            border-radius: 12px;
             color: #fff;
             position: relative;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
         }
-        .bg-bs { background: linear-gradient(135deg, #1d4ed8, #3b82f6); }
-        .bg-acc { background: linear-gradient(135deg, #b45309, #f59e0b); }
-        .bg-ict { background: linear-gradient(135deg, #6d28d9, #8b5cf6); }
+        .bg-bs { background: linear-gradient(135deg, #1e40af, #3b82f6); }
+        .bg-acc { background: linear-gradient(135deg, #92400e, #f59e0b); }
+        .bg-ict { background: linear-gradient(135deg, #5b21b6, #8b5cf6); }
 
         /* Controls */
         select, input, button {
@@ -129,6 +124,7 @@
             background: #0f172a;
             color: white;
             box-sizing: border-box;
+            font-size: 1rem;
         }
 
         button.btn-primary {
@@ -136,13 +132,15 @@
             border: none;
             font-weight: bold;
             cursor: pointer;
+            transition: background 0.2s;
         }
+        button.btn-primary:hover { background: #2563eb; }
 
         /* Full Screen Overlay */
         .overlay {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
-            background: radial-gradient(circle, #111827, #030712);
+            background: radial-gradient(circle, #0f172a, #020617);
             display: none;
             flex-direction: column;
             justify-content: center;
@@ -151,43 +149,32 @@
         }
 
         .overlay-timer {
-            font-size: 8rem;
+            font-size: 9rem;
             font-weight: bold;
             font-family: monospace;
             color: #fff;
-            text-shadow: 0 0 30px rgba(255,255,255,0.2);
+            text-shadow: 0 0 40px rgba(255,255,255,0.3);
+            margin: 20px 0;
         }
 
-        /* Weakly Graph Styling */
-        .bar-chart {
+        .overlay-buttons {
             display: flex;
-            justify-content: space-around;
-            align-items: flex-end;
-            height: 15px;
-            background: #0f172a;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
-        }
-        .bar {
-            width: 25px;
-            background: var(--success);
-            border-radius: 4px 4px 0 0;
-            transition: height 0.5s ease;
+            gap: 15px;
+            width: 80%;
+            max-width: 500px;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
+        <!-- Header -->
         <div class="header">
-            <div>
-                <h2 style="margin:0;">Hello, B.G. Pamindu 👋</h2>
-                <div style="color:var(--text-muted); font-size:0.85rem;">Welcome back to your ultimate training space</div>
-            </div>
-            <div class="vision-text">🎯 TARGET: DISTRICT TOP 100 | DEFENDER 2026 🚘</div>
+            <h2 style="margin:0;">Hello, B.G. Pamindu 👋</h2>
+            <div style="color:var(--text-muted); font-size:0.85rem; margin-top: 4px;">Welcome back to your ultimate training space</div>
         </div>
 
+        <!-- Automatic Countdown -->
         <div class="countdown-section">
             <h3 id="target-title" style="margin:0; color:#cbd5e1;">🔔 ළඟම එන විභාගය පටන් ගැනීමට:</h3>
             <div class="timer-grid">
@@ -200,23 +187,35 @@
 
         <div class="main-grid">
             <div class="left-column">
+                <!-- Subject Hours Summary cards -->
                 <div class="subject-row">
                     <div class="sub-card bg-bs">
-                        <h4>Business Studies</h4>
-                        <span id="hours-bs" style="font-size:1.5rem; font-weight:bold;">0h</span>
+                        <h4 style="margin:0 0 10px 0;">Business Studies</h4>
+                        <span id="hours-bs" style="font-size:1.8rem; font-weight:bold;">0h</span>
                     </div>
                     <div class="sub-card bg-acc">
-                        <h4>Accounting</h4>
-                        <span id="hours-acc" style="font-size:1.5rem; font-weight:bold;">0h</span>
+                        <h4 style="margin:0 0 10px 0;">Accounting</h4>
+                        <span id="hours-acc" style="font-size:1.8rem; font-weight:bold;">0h</span>
                     </div>
                     <div class="sub-card bg-ict">
-                        <h4>ICT</h4>
-                        <span id="hours-ict" style="font-size:1.5rem; font-weight:bold;">0h</span>
+                        <h4 style="margin:0 0 10px 0;">ICT</h4>
+                        <span id="hours-ict" style="font-size:1.8rem; font-weight:bold;">0h</span>
                     </div>
                 </div>
 
+                <!-- Defender Progress Tracker -->
                 <div class="panel" style="margin-bottom:20px;">
-                    <h3>➕ Log Hours (Study / Recording)</h3>
+                    <h3>🚘 Defender Progress Tracker</h3>
+                    <div style="background:#0a0f1d; padding:15px; border-radius:10px; border:1px solid #334155; position:relative; height:60px; overflow:hidden;">
+                        <div style="position:absolute; bottom:10px; left:0; width:100%; height:4px; background:#475569; border-radius:2px;"></div>
+                        <div id="defender-car" style="position:absolute; bottom:0; left:0; font-size:2rem; transition: left 1s ease-in-out;">🚘</div>
+                    </div>
+                    <p id="progress-text" style="text-align:center; margin-top:10px; font-weight:bold; color:var(--text-muted);">0% Complete</p>
+                </div>
+
+                <!-- Manual Hours Logger -->
+                <div class="panel" style="margin-bottom:20px;">
+                    <h3>➕ Log Study / Recording Hours</h3>
                     <select id="log-subject">
                         <option value="BS">Business Studies</option>
                         <option value="ACC">Accounting</option>
@@ -224,12 +223,13 @@
                     </select>
                     <select id="log-type">
                         <option value="Study">තනියම පාඩම් කිරීම</option>
-                        <option value="Recording">Live Class / ਰෙਕੋਡින් බැලීම</option>
+                        <option value="Recording">Live Class / රෙකෝඩින් බැලීම</option>
                     </select>
-                    <input type="number" id="log-amount" placeholder="පැය ගණන (Ex: 2.5)" step="0.5">
+                    <input type="number" id="log-amount" placeholder="පැය ගණන (Ex: 1.5, 2)" step="any">
                     <button class="btn-primary" onclick="addManualHours()">Save Entry</button>
                 </div>
 
+                <!-- Paper Exam Runner -->
                 <div class="panel">
                     <h3>⏱️ Start Focused Exam Practice</h3>
                     <select id="timer-subject">
@@ -238,34 +238,54 @@
                         <option value="ACC">Accounting</option>
                         <option value="ICT">ICT</option>
                     </select>
-                    <input type="number" id="timer-duration" placeholder="කාලය විනාඩි වලින් (Ex: 60)" min="1">
-                    <button style="background:var(--accent-red); border:none; font-weight:bold;" onclick="startPaperTimer()">Start Full Screen Timer</button>
+                    <input type="number" id="timer-duration" placeholder="කාලය විනාඩි වලින් (Ex: 1.5, 60)" step="any" min="0.1">
+                    <button style="background:var(--accent-red); border:none; font-weight:bold; cursor:pointer;" onclick="startPaperTimer()">Start Full Screen Timer</button>
                 </div>
             </div>
 
+            <!-- Right Column -->
             <div class="right-column">
-                <div class="panel" style="text-align:center; margin-bottom:20px; background:#1e1b4b;">
-                    <h3 style="margin:0 0 10px 0; font-size:1rem; color:var(--text-muted);">👩 Your Mom's Mood Status</h3>
-                    <div id="mom-emoji" style="font-size:4rem;">😡</div>
-                    <h4 id="mom-status" style="margin:10px 0; color:#ef4444;">Results Pending...</h4>
-                    <p style="font-size:0.8rem; color:var(--text-muted);">සතියේ මුළු පැය ගණන අනුව මූඩ් එක වෙනස් වේ.</p>
+                <!-- 1. MOM STUDY TIME MOOD (වැඩ නොකරද්දී දුක් විඳීම) -->
+                <div class="panel" style="text-align:center; margin-bottom:20px; background: linear-gradient(180deg, #1e1b4b, #111026);">
+                    <h3 style="margin:0 0 10px 0; font-size:1rem; color:var(--text-muted);">👩 Mom's Study Time Mood</h3>
+                    <div id="mom-emoji" style="font-size:4.5rem;">😡</div>
+                    <h4 id="mom-status" style="margin:15px 0; color:#ef4444; font-size:1.1rem;">Results Pending...</h4>
+                    <p style="font-size:0.8rem; color:var(--text-muted);">සතියේ මුළු පැය ගණන අඩු වුණොත් විඳවන්න වෙයි!</p>
                 </div>
 
+                <!-- 2. MOM PAPER SCORE MOOD (ලකුණු වලට වෙනස් වෙන මූණ) -->
+                <div class="panel" style="text-align:center; margin-bottom:20px; background: linear-gradient(180deg, #062f22, #02110c); border-color: #10b981;">
+                    <h3 style="margin:0 0 10px 0; font-size:1rem; color:#a7f3d0;">📝 Mom's Paper Marks Reaction</h3>
+                    <div id="score-emoji" style="font-size:4.5rem;">😐</div>
+                    <h4 id="score-status" style="margin:15px 0; color:#94a3b8; font-size:1.1rem;">පේපර් ලකුණු ඇතුළත් කර නැත</h4>
+                    <p style="font-size:0.8rem; color:var(--text-muted);">අන්තිමට කරපු පේපරේ ලකුණු අනුව මෙය වෙනස් වේ.</p>
+                </div>
+
+                <!-- Score Logger Box -->
                 <div class="panel">
-                    <h3>📊 Weekly Activity</h3>
-                    <div id="weekly-total" style="font-size:1.2rem; font-weight:bold; color:var(--success);">Total: 0 Hours</div>
-                    <div class="bar-chart" id="chart-container">
-                        </div>
+                    <h3>📊 Score Tracker (Past Papers / LMS)</h3>
+                    <select id="score-subject">
+                        <option value="BS">BS Paper</option>
+                        <option value="ACC">Accounting Paper</option>
+                        <option value="ICT">ICT Paper</option>
+                    </select>
+                    <input type="number" id="score-value" placeholder="ලකුණු (0 - 100 න්)">
+                    <button class="btn-primary" style="background:#10b981;" onclick="savePaperScore()">Log Score</button>
+                    
+                    <div id="weekly-total" style="font-size:1.2rem; font-weight:bold; color:var(--success); margin-top:20px; border-top:1px solid #2d3748; padding-top:10px;">Total Tracked: 0 Hours</div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- FULL SCREEN TIMER OVERLAY -->
     <div id="timerOverlay" class="overlay">
-        <div style="color:var(--text-muted); font-size:1.5rem; margin-bottom:20px;">🚨 FOCUS MODE ACTIVE (පේපරය සිදුකරමින් පවතී)</div>
+        <div id="overlay-status-text" style="color:var(--text-muted); font-size:1.5rem; letter-spacing:1px;">🚨 FOCUS MODE ACTIVE (පේපරය සිදුකරමින් පවතී)</div>
         <div id="bigTimerDisplay" class="overlay-timer">00:00</div>
-        <div style="margin-top:40px; display:flex; gap:20px; width:300px;">
-            <button onclick="cancelPaperTimer()" style="background:#475569; border:none;">Cancel (ලකුණු එකතු නොවේ)</button>
+        
+        <div class="overlay-buttons">
+            <button id="pauseBtn" onclick="togglePauseTimer()" style="background:var(--acc-color); border:none; font-weight:bold; cursor:pointer;">Pause</button>
+            <button onclick="stopAndSaveTimer()" style="background:var(--success); border:none; font-weight:bold; cursor:pointer;">Stop & Save Done Hours</button>
         </div>
     </div>
 
@@ -282,31 +302,25 @@
             { name: "ICT II (Essay)", date: "September 01, 2026 08:30:00" }
         ];
 
-        // 1. AUTO COUNTDOWN MANAGEMENT
         function runAutoCountdown() {
             const now = new Date().getTime();
             let activeExam = null;
-
             for (let exam of timetable) {
                 if (new Date(exam.date).getTime() > now) {
                     activeExam = exam;
                     break;
                 }
             }
-
             if (!activeExam) {
                 document.getElementById("target-title").innerText = "G.C.E. A/L විභාගය අවසන් වී ඇත! 🎉";
                 return;
             }
-
             document.getElementById("target-title").innerText = `🔔 ළඟම එන විභාගය: ${activeExam.name} (${activeExam.date.split(',')[0]})`;
-
             const diff = new Date(activeExam.date).getTime() - now;
             const d = Math.floor(diff / (1000 * 60 * 60 * 24));
             const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
             const s = Math.floor((diff % (1000 * 60)) / 1000);
-
             document.getElementById("days").innerText = d < 10 ? "0"+d : d;
             document.getElementById("hours").innerText = h < 10 ? "0"+h : h;
             document.getElementById("mins").innerText = m < 10 ? "0"+m : m;
@@ -314,28 +328,57 @@
         }
         setInterval(runAutoCountdown, 1000);
 
-        // 2. DATA AND STORAGE
-        let db = JSON.parse(localStorage.getItem("paminduLMS_DB")) || { BS: 0, ACC: 0, ICT: 0, history: [] };
+        // DATA AND STORAGE
+        let db = JSON.parse(localStorage.getItem("paminduLMS_DB")) || { BS: 0, ACC: 0, ICT: 0, lastScore: -1 };
 
         function updateUI() {
-            document.getElementById("hours-bs").innerText = db.BS + "h";
-            document.getElementById("hours-acc").innerText = db.ACC + "h";
-            document.getElementById("hours-ict").innerText = db.ICT + "h";
+            document.getElementById("hours-bs").innerText = db.BS.toFixed(1) + "h";
+            document.getElementById("hours-acc").innerText = db.ACC.toFixed(1) + "h";
+            document.getElementById("hours-ict").innerText = db.ICT.toFixed(1) + "h";
 
-            // Total calculations
             let total = db.BS + db.ACC + db.ICT;
-            document.getElementById("weekly-total").innerText = `Total Tracked: ${total} Hours`;
+            document.getElementById("weekly-total").innerText = `Total Tracked: ${total.toFixed(1)} Hours`;
 
-            // Hard Mom Mood Logic
-            let momEmoji = "😡";
-            let momStatus = "අම්මා මල පැනලා ඉන්නේ! (වැඩ කරපන් කුසීතයා)";
-            if (total >= 15) { momEmoji = "😟"; momStatus = "තාම මදි මචන්, අම්මා බයෙන් ඉන්නේ!"; }
-            if (total >= 35) { momEmoji = "🙂"; momStatus = "දැන් ෂේප්, අම්මට පොඩි හිනාවක් ඇවිත්."; }
-            if (total >= 55) { momEmoji = "😎"; momStatus = "නියමයි! අම්මා උඹ ගැන ආඩම්බරෙන් ඉන්නේ."; }
+            // 🚘 Defender Logic (Target: 50 Hours)
+            let target = 50;
+            let percentage = (total / target) * 100;
+            if (percentage > 100) percentage = 100;
+            let carPos = percentage * 0.9; 
+            document.getElementById("defender-car").style.left = carPos + "%";
+            document.getElementById("progress-text").innerText = percentage.toFixed(1) + "% of Target Completed";
+
+            // 1. Mom Study Time Mood Logic (වැඩ නොකරද්දී විඳවීම)
+            let momEmoji = "😭";
+            let momStatus = "අම්මා අඬනවා! 😭 (මුළු සතියටම පැය 20ක්වත් වැඩ කරලා නැහැ, උඹ විඳවන්න ලෑස්ති වෙයන්!)";
+            
+            if (total >= 20) { momEmoji = "😡"; momStatus = "අම්මා මල පැනලා ඉන්නේ! 😡 (තව වැඩ කරපන්)"; }
+            if (total >= 35) { momEmoji = "🙂"; momStatus = "දැන් ෂේප්, අම්මට පොඩි හිනාවක් ඇවිත්... 🙂"; }
+            if (total >= 55) { momEmoji = "😎"; momStatus = "නියමයි! අම්මා උඹ ගැන සිරාවටම ආඩම්බරෙන් ඉන්නේ! 😎"; }
 
             document.getElementById("mom-emoji").innerText = momEmoji;
             document.getElementById("mom-status").innerText = momStatus;
             document.getElementById("mom-status").style.color = total >= 35 ? "#10b981" : "#ef4444";
+
+            // 2. Mom Paper Score Mood Reaction
+            if(db.lastScore !== undefined && db.lastScore >= 0) {
+                let scoreEmoji = "😡";
+                let scoreText = `ලකුණු ${db.lastScore} මදි මචන්! සර් දැක්කොත් එහෙම ඉවරයි! 😡`;
+                let color = "#ef4444";
+
+                if(db.lastScore >= 35) {
+                    scoreEmoji = "🥹";
+                    scoreText = `ලකුණු ${db.lastScore}යි. තව පොඩ්ඩක් Push කරපන් පුතේ! 🥹`;
+                    color = "#f59e0b";
+                }
+                if(db.lastScore >= 75) {
+                    scoreEmoji = "🥳";
+                    scoreText = `සුපිරි මචන්! ලකුණු ${db.lastScore}යි! අම්මා ලකුණු දැකලා හිනා වෙනවා! 🥳❤️`;
+                    color = "#10b981";
+                }
+                document.getElementById("score-emoji").innerText = scoreEmoji;
+                document.getElementById("score-status").innerText = scoreText;
+                document.getElementById("score-status").style.color = color;
+            }
         }
 
         function addManualHours() {
@@ -346,57 +389,93 @@
                 localStorage.setItem("paminduLMS_DB", JSON.stringify(db));
                 updateUI();
                 document.getElementById("log-amount").value = "";
-                alert("Hours logged successfully!");
+                alert("පැය ගණන සාර්ථකව ඇතුළත් කළා!");
             }
         }
 
-        // 3. FULL SCREEN TIMER LOGIC
+        // FULL SCREEN TIMER LOGIC WITH PAUSE & STOP
         let countdownInterval;
-        let elapsedSeconds = 0;
+        let isPaused = false;
         let totalSecondsAllocated = 0;
+        let remainingSeconds = 0;
         let activeTimerSubject = "None";
 
         function startPaperTimer() {
-            let durationMins = parseInt(document.getElementById("timer-duration").value);
+            let durationMins = parseFloat(document.getElementById("timer-duration").value);
             if (isNaN(durationMins) || durationMins <= 0) {
                 alert("කරුණාකර නිවැරදි විනාඩි ගණනක් ඇතුළත් කරන්න!");
                 return;
             }
             activeTimerSubject = document.getElementById("timer-subject").value;
-            totalSecondsAllocated = durationMins * 60;
-            elapsedSeconds = totalSecondsAllocated;
+            totalSecondsAllocated = Math.round(durationMins * 60);
+            remainingSeconds = totalSecondsAllocated;
+            isPaused = false;
 
+            document.getElementById("pauseBtn").innerText = "Pause";
+            document.getElementById("overlay-status-text").innerText = "🚨 FOCUS MODE ACTIVE (පේපරය සිදුකරමින් පවතී)";
             document.getElementById("timerOverlay").style.display = "flex";
-            runOverlayTimer();
+            
+            updateOverlayDisplay();
             countdownInterval = setInterval(runOverlayTimer, 1000);
         }
 
         function runOverlayTimer() {
-            let mins = Math.floor(elapsedSeconds / 60);
-            let secs = elapsedSeconds % 60;
-            document.getElementById("bigTimerDisplay").innerText = 
-                (mins < 10 ? "0" + mins : mins) + ":" + (secs < 10 ? "0" + secs : secs);
+            if (isPaused) return;
+            remainingSeconds--;
+            updateOverlayDisplay();
 
-            if (elapsedSeconds <= 0) {
+            if (remainingSeconds <= 0) {
                 clearInterval(countdownInterval);
                 document.getElementById("timerOverlay").style.display = "none";
-                
-                // Complete successfully -> Sync auto hours
                 let loggedHours = totalSecondsAllocated / 3600;
                 if (activeTimerSubject !== "None") {
-                    db[activeTimerSubject] += parseFloat(loggedHours.toFixed(1));
+                    db[activeTimerSubject] += parseFloat(loggedHours.toFixed(2));
                 }
                 localStorage.setItem("paminduLMS_DB", JSON.stringify(db));
                 updateUI();
-                alert("💥 නියමයි මචන්! පේපර් එක සාර්ථකව අවසන්. ලකුණු ටික Auto-Sync වුණා!");
+                alert("💥 නියමයි මචන්! පේපර් එක සම්පූර්ණයෙන්ම ඉවරයි. පැය ගණන Auto-Sync වුණා!");
             }
-            elapsedSeconds--;
         }
 
-        function cancelPaperTimer() {
+        function updateOverlayDisplay() {
+            let mins = Math.floor(remainingSeconds / 60);
+            let secs = remainingSeconds % 60;
+            document.getElementById("bigTimerDisplay").innerText = 
+                (mins < 10 ? "0" + mins : mins) + ":" + (secs < 10 ? "0" + secs : secs);
+        }
+
+        function togglePauseTimer() {
+            isPaused = !isPaused;
+            document.getElementById("pauseBtn").innerText = isPaused ? "Resume" : "Pause";
+            document.getElementById("overlay-status-text").innerText = isPaused ? "⏸️ TIMER PAUSED" : "🚨 FOCUS MODE ACTIVE (පේපරය සිදුකරමින් පවතී)";
+        }
+
+        function stopAndSaveTimer() {
             clearInterval(countdownInterval);
             document.getElementById("timerOverlay").style.display = "none";
-            alert("❌ ටයිමරය මැදින් නැවැත්තුවා. ඒ නිසා මේ පැය ගණන Study Hours වලට එකතු වුණේ නැහැ!");
+            let secondsDone = totalSecondsAllocated - remainingSeconds;
+            if (secondsDone > 0) {
+                let hoursDone = secondsDone / 3600;
+                if (activeTimerSubject !== "None") {
+                    db[activeTimerSubject] += parseFloat(hoursDone.toFixed(2));
+                    localStorage.setItem("paminduLMS_DB", JSON.stringify(db));
+                    updateUI();
+                    alert(`⏸️ පේපරය අතරමඟින් නැවැත්තුවා. කරපු වෙලාව (පැය ${hoursDone.toFixed(2)}) එකතු කරා!`);
+                }
+            }
+        }
+
+        function savePaperScore() {
+            let val = parseInt(document.getElementById("score-value").value);
+            if(!isNaN(val) && val >= 0 && val <= 100) {
+                db.lastScore = val;
+                localStorage.setItem("paminduLMS_DB", JSON.stringify(db));
+                updateUI();
+                document.getElementById("score-value").value = "";
+                alert("ලකුණු ඇතුළත් කරා! අම්මාගේ Reaction එක බලපන් මචන්.");
+            } else {
+                alert("කරුණාකර 0ත් 100ත් අතර නිවැරදි ලකුණක් දාන්න!");
+            }
         }
 
         window.onload = function() {
