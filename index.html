@@ -97,7 +97,11 @@
         }
         .timetable-table th { background: rgba(255,255,255,0.03); color: var(--neon-blue); }
 
-        /* Countdown Box Styling */
+        /* Score History Style Updates */
+        .score-history-box {
+            max-height: 200px; overflow-y: auto; margin-top: 15px; border: 1px solid rgba(255,255,255,0.05); border-radius: 8px;
+        }
+
         .countdown-container {
             background: linear-gradient(135deg, #12031c, #05020a);
             border: 1px solid var(--neon-purple);
@@ -199,8 +203,10 @@
                     <h3 id="future-status" style="margin:5px 0; font-size:1.05rem; line-height:1.5;">පැය ගණන madi!</h3>
                 </div>
 
+                <!-- UPDATED: LOG PAST PAPER SCORE WITH NAME FIELD -->
                 <div class="panel">
                     <h3 style="margin-top:0; color:var(--neon-green);">📊 LOG PAST PAPER SCORE</h3>
+                    <input type="text" id="score-paper-name" placeholder="පේපර් එකේ නම (Ex: 2022 Past Paper I)" style="margin-bottom:10px;">
                     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom: 5px;">
                         <select id="score-subject" style="margin:0;">
                             <option value="BS">Business Studies</option>
@@ -209,11 +215,28 @@
                         </select>
                         <input type="number" id="score-value" placeholder="ලකුණු (0 - 100)" style="margin:0;">
                     </div>
-                    <button class="btn-primary" style="background:linear-gradient(90deg, #00ff66, #00aa44); color:#000;" onclick="savePaperScore()">SUBMIT SCORE</button>
+                    <button class="btn-primary" style="background:linear-gradient(90deg, #00ff66, #00aa44); color:#000; margin-top:10px;" onclick="savePaperScore()">SUBMIT SCORE</button>
+                    
+                    <!-- New History Table Area -->
+                    <div class="score-history-box">
+                        <table class="timetable-table" style="margin:0; font-size:0.8rem;" id="score-history-table">
+                            <thead>
+                                <tr>
+                                    <th>පේපර් එක</th>
+                                    <th>විෂය</th>
+                                    <th>ලකුණ</th>
+                                    <th>ක්‍රියාව</th>
+                                </tr>
+                            </thead>
+                            <tbody id="score-history-tbody">
+                                <!-- History Rows inject dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
                 <div class="panel">
-                    <h3 style="margin-top:0;">📈 ACADEMIC MULTI-BARS (BS / ACC / ICT)</h3>
+                    <h3 style="margin-top:0; color:var(--neon-purple);">📈 ACADEMIC MULTI-BARS (BS / ACC / ICT)</h3>
                     <div class="chart-wrap">
                         <div class="bar-container">
                             <div class="bar-group">
@@ -317,7 +340,9 @@
 
     <script>
         let todayStr = new Date().toISOString().split('T')[0];
-        let db = JSON.parse(localStorage.getItem("paminduLMS_v5")) || {
+        
+        // Dynamic LocalStorage migration supporting explicit paper names array
+        let db = JSON.parse(localStorage.getItem("paminduLMS_v6")) || {
             BS: 0, ACC: 0, ICT: 0,
             allTimeBS: 0, allTimeACC: 0, allTimeICT: 0,
             lastScore: -1, lastOpenedDate: todayStr,
@@ -325,10 +350,13 @@
                 { id: 1, text: "Business Studies Past Paper එකක් ලිවීම", completed: false, dateAdded: todayStr },
                 { id: 2, text: "Accounting රෙකෝඩින් එකක් බැලීම", completed: false, dateAdded: todayStr },
                 { id: 3, text: "ICT MCQ 50ක් සම්පූර්ණ කිරීම", completed: false, dateAdded: todayStr }
-            ]
+            ],
+            scoresHistory: [] // Array structure to store complex tracking history logs
         };
 
-        // Official Exam Schedule Data Matrix
+        // Retro-compatibility check for legacy version database conversion
+        if(!db.scoresHistory) { db.scoresHistory = []; }
+
         const examDates = [
             { name: "Business Studies (Paper I)", time: new Date("2026-08-13T08:30:00") },
             { name: "Business Studies (Paper II)", time: new Date("2026-08-17T13:00:00") },
@@ -341,12 +369,10 @@
             { name: "Information & Communication Technology (ICT - Paper II)", time: new Date("2026-09-01T08:30:00") }
         ];
 
-        // Intelligent Next Closer Exam Engine
         function updateExamCountdown() {
             let now = new Date();
             let nextExam = null;
 
-            // Find the closest future exam session
             for (let i = 0; i < examDates.length; i++) {
                 if (examDates[i].time > now) {
                     nextExam = examDates[i];
@@ -359,42 +385,32 @@
 
             if (nextExam) {
                 nameDisplay.innerText = `🎯 ඊළඟට තියෙන්නේ: ${nextExam.name} - (${nextExam.time.toLocaleDateString('en-GB')} වෙලාව: ${nextExam.time.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})})`;
-                
                 let diff = nextExam.time - now;
                 let days = Math.floor(diff / (1000 * 60 * 60 * 24));
                 let hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 let minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
                 let seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
                 timerDisplay.innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-                timerDisplay.style.color = "var(--neon-green)";
             } else {
                 nameDisplay.innerText = "🎉 සියලුම විභාග සාර්ථකව අවසන් කර ඇත! සුභ අනාගතයක්!";
                 timerDisplay.innerText = "MISSION COMPLETED 🚘";
-                timerDisplay.style.color = "var(--neon-blue)";
             }
         }
 
-        // Live Clock Implementation
         function updateClock() {
             let now = new Date();
             let dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
             let timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
-            
             document.getElementById("live-date").innerText = dateStr;
             document.getElementById("live-time").innerText = timeStr;
-            
-            updateExamCountdown(); // Kept inside 1s interval sync for rock-solid timing
+            updateExamCountdown();
         }
         setInterval(updateClock, 1000);
 
-        // Smart Target Auto Roll-over Logic
         if (db.lastOpenedDate !== todayStr) {
-            db.tasks.forEach(t => {
-                if (!t.completed) { t.dateAdded = todayStr; }
-            });
+            db.tasks.forEach(t => { if (!t.completed) { t.dateAdded = todayStr; } });
             db.lastOpenedDate = todayStr;
-            localStorage.setItem("paminduLMS_v5", JSON.stringify(db));
+            saveDB();
         }
 
         function updateUI() {
@@ -402,7 +418,6 @@
             document.getElementById("hours-acc").innerText = db.ACC.toFixed(1) + "h";
             document.getElementById("hours-ict").innerText = db.ICT.toFixed(1) + "h";
 
-            // 1. DYNAMIC AMMA AL-GRADE REACTION
             if (db.lastScore >= 0) {
                 let mEmoji = "💀"; let mStatus = ""; let mColor = "var(--neon-red)";
                 let s = db.lastScore;
@@ -422,7 +437,6 @@
                 document.getElementById("mom-status").style.color = mColor;
             }
 
-            // 2. MY MOOD - HOURS ESCALATION
             let totalWeekly = db.BS + db.ACC + db.ICT;
             let fEmoji = "😭"; let fStatus = ""; let fColor = "var(--neon-red)";
             if (totalWeekly < 2) {
@@ -438,14 +452,12 @@
             document.getElementById("future-status").innerText = fStatus;
             document.getElementById("future-status").style.color = fColor;
 
-            // 3. DEFENDER MOTOR TRACK
             let totalTasks = db.tasks.length;
             let completedTasks = db.tasks.filter(t => t.completed).length;
             let tickPercentage = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
             document.getElementById("defender-car").style.left = (tickPercentage * 0.9) + "%";
             document.getElementById("progress-text").innerText = `${tickPercentage.toFixed(0)}% TARGET PROGRESS ACTIVATED`;
 
-            // 4. CHART BARS CALCULATOR
             let maxVal = Math.max(db.BS, db.ACC, db.ICT, db.allTimeBS, db.allTimeACC, db.allTimeICT, 1);
             document.getElementById("bar-week-bs").style.height = ((db.BS / maxVal) * 100) + "px";
             document.getElementById("bar-week-acc").style.height = ((db.ACC / maxVal) * 100) + "px";
@@ -455,17 +467,15 @@
             document.getElementById("bar-all-ict").style.height = ((db.allTimeICT / maxVal) * 100) + "px";
 
             renderTasks();
+            renderScoreHistory(); // Redraw score tracker table updates
         }
 
         function renderTasks() {
             let container = document.getElementById("task-list-box"); container.innerHTML = "";
-            
             db.tasks.forEach(task => {
                 let div = document.createElement("div");
                 div.className = `task-item ${task.completed ? 'completed' : ''}`;
-                
                 let displayDate = task.dateAdded === todayStr ? "Today" : task.dateAdded;
-                
                 div.innerHTML = `
                     <div>
                         <span style="${task.completed ? 'text-decoration:line-through;' : ''}">${task.text}</span>
@@ -510,7 +520,6 @@
             }
         }
 
-        // TIMER CORE SYSTEM
         let countdownInterval; let isPaused = false;
         let totalSecondsAllocated = 0; let remainingSeconds = 0; let activeTimerSubject = "None";
 
@@ -559,21 +568,84 @@
 
         function toggleFullscreen() {
             let overlay = document.getElementById("timerOverlay");
-            if (!document.fullscreenElement) {
-                overlay.requestFullscreen().catch(err => {
-                    alert(`Fullscreen කරන්න බැරි වුණා මචන්: ${err.message}`);
-                });
-            } else {
-                document.exitFullscreen();
+            if (!document.fullscreenElement) { overlay.requestFullscreen().catch(err => { alert(`Fullscreen වැරදුණා: ${err.message}`); }); } 
+            else { document.exitFullscreen(); }
+        }
+
+        // ENHANCED SCORE SAVING LOGIC WITH CUSTOM NAMES
+        function savePaperScore() {
+            let pName = document.getElementById("score-paper-name").value.trim();
+            let sub = document.getElementById("score-subject").value;
+            let val = parseInt(document.getElementById("score-value").value);
+            
+            if(pName === "") {
+                alert("අනේ මචං, පේපර් එක අඳුරගන්න නමක් දාපන්! (Ex: 2024 ICT Paper I)");
+                return;
+            }
+            if(isNaN(val) || val < 0 || val > 100) {
+                alert("ලකුණු 0ත් 100ත් අතර නිවැරදි අගයක් දාපන්!");
+                return;
+            }
+
+            // Append to central state engine array
+            db.scoresHistory.push({
+                id: Date.now(),
+                paperName: pName,
+                subject: sub,
+                score: val
+            });
+
+            db.lastScore = val; 
+            saveDB(); 
+            updateUI(); 
+            
+            // Clean up inputs
+            document.getElementById("score-paper-name").value = "";
+            document.getElementById("score-value").value = "";
+        }
+
+        // RENDER SCORE HISTORY RUNTIME ENGINE
+        function renderScoreHistory() {
+            let tbody = document.getElementById("score-history-tbody");
+            tbody.innerHTML = "";
+
+            if(db.scoresHistory.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#6b7280;">තවම ලකුණු ඇතුළත් කර නැත!</td></tr>`;
+                return;
+            }
+
+            // Loop in reverse to display latest records at top
+            for(let i = db.scoresHistory.length - 1; i >= 0; i--) {
+                let record = db.scoresHistory[i];
+                let tr = document.createElement("tr");
+                
+                let subColor = "var(--neon-blue)";
+                if(record.subject === "ACC") subColor = "var(--neon-amber)";
+                if(record.subject === "ICT") subColor = "var(--neon-purple)";
+
+                tr.innerHTML = `
+                    <td style="font-weight:bold; max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${record.paperName}</td>
+                    <td style="color:${subColor}; font-weight:bold;">${record.subject}</td>
+                    <td style="font-family:monospace; color:var(--neon-green); font-weight:bold;">${record.score}</td>
+                    <td><button class="btn-delete" style="font-size:0.9rem;" onclick="deleteScoreRecord(${record.id})">🗑️</button></td>
+                `;
+                tbody.appendChild(tr);
             }
         }
 
-        function savePaperScore() {
-            let val = parseInt(document.getElementById("score-value").value);
-            if(!isNaN(val)) { db.lastScore = val; saveDB(); updateUI(); document.getElementById("score-value").value = ""; }
+        function deleteScoreRecord(id) {
+            if(confirm("මේ ලකුණු Record එක මැකීමට අවශ්‍යද?")) {
+                db.scoresHistory = db.scoresHistory.filter(r => r.id !== id);
+                if(db.scoresHistory.length > 0) {
+                    db.lastScore = db.scoresHistory[db.scoresHistory.length - 1].score;
+                } else {
+                    db.lastScore = -1;
+                }
+                saveDB(); updateUI();
+            }
         }
 
-        function saveDB() { localStorage.setItem("paminduLMS_v5", JSON.stringify(db)); }
+        function saveDB() { localStorage.setItem("paminduLMS_v6", JSON.stringify(db)); }
         
         window.onload = function() { 
             document.getElementById("new-task-date").value = todayStr;
