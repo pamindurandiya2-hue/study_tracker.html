@@ -49,15 +49,15 @@
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5); margin-bottom: 25px;
         }
 
-        .subject-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 25px; }
+        .subject-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 25px; }
         .sub-card { padding: 20px; border-radius: 14px; position: relative; border: 1px solid rgba(255,255,255,0.08); }
         .bg-bs { background: linear-gradient(135deg, #091a3c, #0a3594); border-bottom: 4px solid var(--neon-blue); }
         .bg-acc { background: linear-gradient(135deg, #221404, #94580a); border-bottom: 4px solid var(--neon-amber); }
         .bg-ict { background: linear-gradient(135deg, #18052e, #631d9c); border-bottom: 4px solid var(--neon-purple); }
         
-        .hours-split { display: flex; justify-content: space-between; margin-top: 10px; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 8px; }
-        .hours-val { font-size: 1.6rem; font-weight: 800; font-family: monospace; }
-        .hours-label { font-size: 0.75rem; color: #a1a1aa; text-transform: uppercase; display: block; margin-bottom: 2px; }
+        .hours-split { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 10px; background: rgba(0,0,0,0.4); padding: 8px; border-radius: 8px; text-align: center; }
+        .hours-val { font-size: 1.1rem; font-weight: 800; font-family: monospace; }
+        .hours-label { font-size: 0.65rem; color: #a1a1aa; text-transform: uppercase; display: block; margin-bottom: 4px; }
 
         select, input, button, textarea {
             width: 100%; padding: 14px; margin: 10px 0; border-radius: 10px;
@@ -82,10 +82,12 @@
         #defender-car { position: absolute; bottom: 6px; left: 0; font-size: 2.5rem; transition: left 0.7s cubic-bezier(0.1, 0.8, 0.3, 1); filter: drop-shadow(0 0 8px var(--neon-blue)); }
 
         .chart-wrap { background: #05060b; padding: 25px; border-radius: 12px; }
-        .bar-container { display: flex; align-items: flex-end; height: 180px; gap: 40px; justify-content: center; }
-        .bar-group { display: flex; flex-direction: column; align-items: center; }
-        .multi-bars { display: flex; align-items: flex-end; gap: 10px; height: 100%; border-bottom: 2px solid #1e293b; padding-bottom: 5px; }
-        .chart-bar { width: 24px; border-radius: 6px 6px 0 0; min-height: 5px; transition: height 0.6s ease; }
+        .bar-container { display: flex; align-items: flex-end; height: 220px; gap: 20px; justify-content: center; }
+        .bar-group { display: flex; flex-direction: column; align-items: center; width: 100px; }
+        .multi-bars { display: flex; align-items: flex-end; gap: 8px; height: 160px; border-bottom: 2px solid #1e293b; padding-bottom: 5px; position: relative; }
+        .chart-bar-wrapper { display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; }
+        .bar-text { font-size: 0.65rem; font-family: monospace; color: #fff; margin-bottom: 2px; font-weight: bold; text-shadow: 0 0 4px rgba(0,0,0,0.8); }
+        .chart-bar { width: 18px; border-radius: 4px 4px 0 0; min-height: 2px; transition: height 0.6s ease; }
         
         .overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #040408; display: none;
@@ -166,22 +168,25 @@
                     <div class="sub-card bg-bs">
                         <h4 style="margin:0 0 10px 0;">Business Studies</h4>
                         <div class="hours-split">
-                            <div><span class="hours-label">සතිය</span><div class="hours-val" id="hours-bs">0.0h</div></div>
-                            <div><span class="hours-label">මාසය</span><div class="hours-val" id="month-hours-bs" style="color:var(--neon-blue)">0.0h</div></div>
+                            <div><span class="hours-label">අද</span><div class="hours-val" id="today-hours-bs" style="color:#fff">0.0h</div></div>
+                            <div><span class="hours-label">සතිය</span><div class="hours-val" id="hours-bs" style="color:var(--neon-blue)">0.0h</div></div>
+                            <div><span class="hours-label">මාසය</span><div class="hours-val" id="month-hours-bs" style="color:var(--neon-green)">0.0h</div></div>
                         </div>
                     </div>
                     <div class="sub-card bg-acc">
                         <h4 style="margin:0 0 10px 0;">Accounting</h4>
                         <div class="hours-split">
-                            <div><span class="hours-label">සතිය</span><div class="hours-val" id="hours-acc">0.0h</div></div>
-                            <div><span class="hours-label">මාසය</span><div class="hours-val" id="month-hours-acc" style="color:var(--neon-amber)">0.0h</div></div>
+                            <div><span class="hours-label">අද</span><div class="hours-val" id="today-hours-acc" style="color:#fff">0.0h</div></div>
+                            <div><span class="hours-label">සතිය</span><div class="hours-val" id="hours-acc" style="color:var(--neon-amber)">0.0h</div></div>
+                            <div><span class="hours-label">මාසය</span><div class="hours-val" id="month-hours-acc" style="color:var(--neon-green)">0.0h</div></div>
                         </div>
                     </div>
                     <div class="sub-card bg-ict">
                         <h4 style="margin:0 0 10px 0;">ICT</h4>
                         <div class="hours-split">
-                            <div><span class="hours-label">සතිය</span><div class="hours-val" id="hours-ict">0.0h</div></div>
-                            <div><span class="hours-label">මාසය</span><div class="hours-val" id="month-hours-ict" style="color:var(--neon-purple)">0.0h</div></div>
+                            <div><span class="hours-label">අද</span><div class="hours-val" id="today-hours-ict" style="color:#fff">0.0h</div></div>
+                            <div><span class="hours-label">සතිය</span><div class="hours-val" id="hours-ict" style="color:var(--neon-purple)">0.0h</div></div>
+                            <div><span class="hours-label">මාසය</span><div class="hours-val" id="month-hours-ict" style="color:var(--neon-green)">0.0h</div></div>
                         </div>
                     </div>
                 </div>
@@ -222,16 +227,11 @@
 
                 <div class="panel">
                     <h3 style="margin-top:0;">➕ LOG STUDY / RECORDING HOURS MANUALLY</h3>
-                    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:15px;">
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
                         <select id="log-subject" style="margin:0;">
                             <option value="BS">Business Studies</option>
                             <option value="ACC">Accounting</option>
                             <option value="ICT">ICT</option>
-                        </select>
-                        <select id="log-target" style="margin:0;">
-                            <option value="both">සතිය සහ මාසය දෙකටම</option>
-                            <option value="week">සතියට පමණක්</option>
-                            <option value="month">මාසයට පමණක්</option>
                         </select>
                         <input type="number" id="log-amount" placeholder="පැය ගණන (Ex: 2)" step="any" style="margin:0;">
                     </div>
@@ -290,7 +290,7 @@
 
                 <div class="panel" style="border: 1px solid var(--neon-amber); background: #0c0802;">
                     <h3 style="margin-top:0; color:var(--neon-amber); display:flex; align-items:center; gap:8px;">🗄️ SYSTEM DATA BACKUP ENGINE</h3>
-                    <p style="font-size:0.75rem; color:#a1a1aa; margin:-5px 0 10px 0;">ඩේටා මැකී යාම වැලැක්වීමට මෙතනින් Backup එකක් බාගත කර තබාගන්න.</p>
+                    <p style="font-size:0.75rem; color:#a1a1aa; margin:-5px 0 10px 0;">ඩේටา මැකී යාම වැලැක්වීමට මෙතනින් Backup එකක් බාගත කර තබාගන්න.</p>
                     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
                         <button onclick="downloadBackup()" style="background:linear-gradient(90deg, #ffaa00, #996600); color:white; font-weight:bold; font-size:0.8rem; padding:10px; border:none; cursor:pointer; border-radius:8px;">📥 DOWNLOAD BACKUP</button>
                         <button onclick="triggerRestoreClick()" style="background:linear-gradient(90deg, #00f0ff, #0066aa); color:black; font-weight:bold; font-size:0.8rem; padding:10px; border:none; cursor:pointer; border-radius:8px;">📤 RESTORE BACKUP</button>
@@ -321,24 +321,32 @@
                 </div>
 
                 <div class="panel">
-                    <h3 style="margin-top:0; color:var(--neon-purple);">📈 ACADEMIC MULTI-BARS (BS / ACC / ICT)</h3>
+                    <h3 style="margin-top:0; color:var(--neon-purple);">📈 ACADEMIC PROGRESS BARS (BS / ACC / ICT)</h3>
                     <div class="chart-wrap">
                         <div class="bar-container">
                             <div class="bar-group">
                                 <div class="multi-bars">
-                                    <div id="bar-week-bs" class="chart-bar" style="background:var(--neon-blue); height:5px;"></div>
-                                    <div id="bar-week-acc" class="chart-bar" style="background:var(--neon-amber); height:5px;"></div>
-                                    <div id="bar-week-ict" class="chart-bar" style="background:var(--neon-purple); height:5px;"></div>
+                                    <div class="chart-bar-wrapper"><span id="text-today-bs" class="bar-text">0h</span><div id="bar-today-bs" class="chart-bar" style="background:var(--neon-blue);"></div></div>
+                                    <div class="chart-bar-wrapper"><span id="text-today-acc" class="bar-text">0h</span><div id="bar-today-acc" class="chart-bar" style="background:var(--neon-amber);"></div></div>
+                                    <div class="chart-bar-wrapper"><span id="text-today-ict" class="bar-text">0h</span><div id="bar-today-ict" class="chart-bar" style="background:var(--neon-purple);"></div></div>
                                 </div>
-                                <span style="font-size:0.8rem; margin-top:8px; font-weight:bold;">සතියේ ප්‍රගතිය</span>
+                                <span style="font-size:0.75rem; margin-top:8px; font-weight:bold; color:#fff;">අද ප්‍රගතිය</span>
                             </div>
                             <div class="bar-group">
                                 <div class="multi-bars">
-                                    <div id="bar-month-bs" class="chart-bar" style="background:var(--neon-blue); height:5px;"></div>
-                                    <div id="bar-month-acc" class="chart-bar" style="background:var(--neon-amber); height:5px;"></div>
-                                    <div id="bar-month-ict" class="chart-bar" style="background:var(--neon-purple); height:5px;"></div>
+                                    <div class="chart-bar-wrapper"><span id="text-week-bs" class="bar-text">0h</span><div id="bar-week-bs" class="chart-bar" style="background:var(--neon-blue);"></div></div>
+                                    <div class="chart-bar-wrapper"><span id="text-week-acc" class="bar-text">0h</span><div id="bar-week-acc" class="chart-bar" style="background:var(--neon-amber);"></div></div>
+                                    <div class="chart-bar-wrapper"><span id="text-week-ict" class="bar-text">0h</span><div id="bar-week-ict" class="chart-bar" style="background:var(--neon-purple);"></div></div>
                                 </div>
-                                <span style="font-size:0.8rem; margin-top:8px; font-weight:bold;">මාසේ ප්‍රගතිය</span>
+                                <span style="font-size:0.75rem; margin-top:8px; font-weight:bold; color:var(--neon-blue);">සතියේ ප්‍රගතිය</span>
+                            </div>
+                            <div class="bar-group">
+                                <div class="multi-bars">
+                                    <div class="chart-bar-wrapper"><span id="text-month-bs" class="bar-text">0h</span><div id="bar-month-bs" class="chart-bar" style="background:var(--neon-blue);"></div></div>
+                                    <div class="chart-bar-wrapper"><span id="text-month-acc" class="bar-text">0h</span><div id="bar-month-acc" class="chart-bar" style="background:var(--neon-amber);"></div></div>
+                                    <div class="chart-bar-wrapper"><span id="text-month-ict" class="bar-text">0h</span><div id="bar-month-ict" class="chart-bar" style="background:var(--neon-purple);"></div></div>
+                                </div>
+                                <span style="font-size:0.75rem; margin-top:8px; font-weight:bold; color:var(--neon-green);">මාසේ ප්‍රගතිය</span>
                             </div>
                         </div>
                     </div>
@@ -395,6 +403,7 @@
         let todayStr = new Date().toISOString().split('T')[0];
         
         let db = JSON.parse(localStorage.getItem("paminduLMS_v7")) || {
+            todayBS: 0, todayACC: 0, todayICT: 0,
             BS: 0, ACC: 0, ICT: 0,
             monthBS: 0, monthACC: 0, monthICT: 0,
             allTimeBS: 0, allTimeACC: 0, allTimeICT: 0,
@@ -408,8 +417,10 @@
             scoresHistory: []
         };
 
+        // DB backward compatibility check
         if(!db.scoresHistory) { db.scoresHistory = []; }
         if(!db.apiKey) { db.apiKey = ""; }
+        if(db.todayBS === undefined) { db.todayBS = 0; db.todayACC = 0; db.todayICT = 0; }
         if(db.monthBS === undefined) { db.monthBS = db.BS; db.monthACC = db.ACC; db.monthICT = db.ICT; }
 
         const examDates = [
@@ -448,7 +459,9 @@
         }
         setInterval(updateClock, 1000);
 
+        // Reset daily hours if date changed
         if (db.lastOpenedDate !== todayStr) {
+            db.todayBS = 0; db.todayACC = 0; db.todayICT = 0;
             db.tasks.forEach(t => { if (!t.completed) { t.dateAdded = todayStr; } });
             db.lastOpenedDate = todayStr; saveDB();
         }
@@ -459,6 +472,11 @@
         }
 
         function updateUI() {
+            // Cards Update
+            document.getElementById("today-hours-bs").innerText = db.todayBS.toFixed(1) + "h";
+            document.getElementById("today-hours-acc").innerText = db.todayACC.toFixed(1) + "h";
+            document.getElementById("today-hours-ict").innerText = db.todayICT.toFixed(1) + "h";
+
             document.getElementById("hours-bs").innerText = db.BS.toFixed(1) + "h";
             document.getElementById("hours-acc").innerText = db.ACC.toFixed(1) + "h";
             document.getElementById("hours-ict").innerText = db.ICT.toFixed(1) + "h";
@@ -483,7 +501,6 @@
             let totalMonthly = db.monthBS + db.monthACC + db.monthICT;
             let fEmoji = "😭"; let fStatus = ""; let fColor = "var(--neon-red)";
             
-            // Mood Logic dynamic with weekly and monthly benchmarks
             if (totalWeekly >= 8 || totalMonthly >= 35) { fEmoji = "😎"; fStatus = `සතියට පැය ${totalWeekly.toFixed(1)}යි, මාසෙට පැය ${totalMonthly.toFixed(1)}යි! සුපිරිම වැඩක්. මම උපරිම සතුටින්. Defender එක ගේට්ටුව ළඟ! 😎🚘🔥`; fColor = "var(--neon-green)"; }
             else if (totalWeekly >= 5 || totalMonthly >= 20) { fEmoji = "🙂"; fStatus = `පැය ගණන ශේප්, මූණේ හිනාවක් තියෙනවා. තව ටිකක් ලෝඩ් කරමු මචං!`; fColor = "var(--neon-blue)"; }
             else if (totalWeekly >= 2 || totalMonthly >= 8) { fEmoji = "😐"; fStatus = `සතියට පැය ${totalWeekly.toFixed(1)}යි. සාමාන්‍ය කම්මැලි මට්ටම. ඩිෆෙන්ඩර් හීන ඈතයි!`; fColor = "var(--neon-amber)"; }
@@ -496,14 +513,32 @@
             document.getElementById("defender-car").style.left = (tickPercentage * 0.9) + "%";
             document.getElementById("progress-text").innerText = `${tickPercentage.toFixed(0)}% TARGET PROGRESS ACTIVATED`;
 
-            let maxVal = Math.max(db.BS, db.ACC, db.ICT, db.monthBS, db.monthACC, db.monthICT, 1);
-            document.getElementById("bar-week-bs").style.height = ((db.BS / maxVal) * 100) + "px";
-            document.getElementById("bar-week-acc").style.height = ((db.ACC / maxVal) * 100) + "px";
-            document.getElementById("bar-week-ict").style.height = ((db.ICT / maxVal) * 100) + "px";
+            // Charts Math & Maximum calculation
+            let maxVal = Math.max(db.todayBS, db.todayACC, db.todayICT, db.BS, db.ACC, db.ICT, db.monthBS, db.monthACC, db.monthICT, 1);
             
-            document.getElementById("bar-month-bs").style.height = ((db.monthBS / maxVal) * 100) + "px";
-            document.getElementById("bar-month-acc").style.height = ((db.monthACC / maxVal) * 100) + "px";
-            document.getElementById("bar-month-ict").style.height = ((db.monthICT / maxVal) * 100) + "px";
+            // Set Text overlay inside bars
+            document.getElementById("text-today-bs").innerText = db.todayBS.toFixed(1) + "h";
+            document.getElementById("text-today-acc").innerText = db.todayACC.toFixed(1) + "h";
+            document.getElementById("text-today-ict").innerText = db.todayICT.toFixed(1) + "h";
+            document.getElementById("text-week-bs").innerText = db.BS.toFixed(1) + "h";
+            document.getElementById("text-week-acc").innerText = db.ACC.toFixed(1) + "h";
+            document.getElementById("text-week-ict").innerText = db.ICT.toFixed(1) + "h";
+            document.getElementById("text-month-bs").innerText = db.monthBS.toFixed(1) + "h";
+            document.getElementById("text-month-acc").innerText = db.monthACC.toFixed(1) + "h";
+            document.getElementById("text-month-ict").innerText = db.monthICT.toFixed(1) + "h";
+
+            // Set Heights dynamically
+            document.getElementById("bar-today-bs").style.height = ((db.todayBS / maxVal) * 140) + "px";
+            document.getElementById("bar-today-acc").style.height = ((db.todayACC / maxVal) * 140) + "px";
+            document.getElementById("bar-today-ict").style.height = ((db.todayICT / maxVal) * 140) + "px";
+            
+            document.getElementById("bar-week-bs").style.height = ((db.BS / maxVal) * 140) + "px";
+            document.getElementById("bar-week-acc").style.height = ((db.ACC / maxVal) * 140) + "px";
+            document.getElementById("bar-week-ict").style.height = ((db.ICT / maxVal) * 140) + "px";
+            
+            document.getElementById("bar-month-bs").style.height = ((db.monthBS / maxVal) * 140) + "px";
+            document.getElementById("bar-month-acc").style.height = ((db.monthACC / maxVal) * 140) + "px";
+            document.getElementById("bar-month-ict").style.height = ((db.monthICT / maxVal) * 140) + "px";
 
             renderTasks(); renderScoreHistory(); drawLineChart();
         }
@@ -536,11 +571,11 @@
         
         function addManualHours() {
             let sub = document.getElementById("log-subject").value; 
-            let target = document.getElementById("log-target").value;
             let amt = parseFloat(document.getElementById("log-amount").value);
             if (!isNaN(amt) && amt > 0) { 
-                if (target === "both" || target === "week") { db[sub] += amt; }
-                if (target === "both" || target === "month") { db["month" + sub] += amt; }
+                db["today" + sub] += amt;
+                db[sub] += amt; 
+                db["month" + sub] += amt; 
                 db["allTime" + sub] += amt; 
                 saveDB(); updateUI(); 
                 document.getElementById("log-amount").value = ""; 
@@ -557,10 +592,10 @@
             if (isPaused) return; remainingSeconds--;
             let mins = Math.floor(remainingSeconds / 60); let secs = remainingSeconds % 60;
             document.getElementById("bigTimerDisplay").innerText = (mins < 10 ? "0"+mins : mins) + ":" + (secs < 10 ? "0"+secs : secs);
-            if (remainingSeconds <= 0) { clearInterval(countdownInterval); if (document.fullscreenElement) { document.exitFullscreen().catch(()=>{}); } document.getElementById("timerOverlay").style.display = "none"; let hrs = totalSecondsAllocated / 3600; if (activeTimerSubject !== "None") { db[activeTimerSubject] += hrs; db["month" + activeTimerSubject] += hrs; db["allTime" + activeTimerSubject] += hrs; } saveDB(); updateUI(); }
+            if (remainingSeconds <= 0) { clearInterval(countdownInterval); if (document.fullscreenElement) { document.exitFullscreen().catch(()=>{}); } document.getElementById("timerOverlay").style.display = "none"; let hrs = totalSecondsAllocated / 3600; if (activeTimerSubject !== "None") { db["today" + activeTimerSubject] += hrs; db[activeTimerSubject] += hrs; db["month" + activeTimerSubject] += hrs; db["allTime" + activeTimerSubject] += hrs; } saveDB(); updateUI(); }
         }
         function togglePauseTimer() { isPaused = !isPaused; document.getElementById("pauseBtn").innerText = isPaused ? "RESUME" : "PAUSE"; }
-        function stopAndSaveTimer() { clearInterval(countdownInterval); if (document.fullscreenElement) { document.exitFullscreen().catch(()=>{}); } document.getElementById("timerOverlay").style.display = "none"; let done = totalSecondsAllocated - remainingSeconds; if (done > 0 && activeTimerSubject !== "None") { let hrs = done / 3600; db[activeTimerSubject] += hrs; db["month" + activeTimerSubject] += hrs; db["allTime" + activeTimerSubject] += hrs; saveDB(); updateUI(); } }
+        function stopAndSaveTimer() { clearInterval(countdownInterval); if (document.fullscreenElement) { document.exitFullscreen().catch(()=>{}); } document.getElementById("timerOverlay").style.display = "none"; let done = totalSecondsAllocated - remainingSeconds; if (done > 0 && activeTimerSubject !== "None") { let hrs = done / 3600; db["today" + activeTimerSubject] += hrs; db[activeTimerSubject] += hrs; db["month" + activeTimerSubject] += hrs; db["allTime" + activeTimerSubject] += hrs; saveDB(); updateUI(); } }
         function exitWithoutSaving() { if (confirm("සැසිය සේව් නොකර ඉවත් වෙන්නද බං ඕනේ?")) { clearInterval(countdownInterval); if (document.fullscreenElement) { document.exitFullscreen().catch(()=>{}); } document.getElementById("timerOverlay").style.display = "none"; } }
         function toggleFullscreen() { let overlay = document.getElementById("timerOverlay"); if (!document.fullscreenElement) { overlay.requestFullscreen().catch(err => { alert(`Fullscreen වැරදුණා: ${err.message}`); }); } else { document.exitFullscreen(); } }
 
@@ -670,6 +705,7 @@
             let systemContext = `You are Pamindu's brutal, motivational, and highly analytical AI Study Coach for G.C.E Advanced Level Commerce stream. 
             Respond in a friendly, brotherly, motivating Sinhala language (mixed with light English terms, standard Sri Lankan student slang style).
             Here is Pamindu's real-time system database state:
+            - Daily Study Hours: BS: ${db.todayBS.toFixed(1)}h, ACC: ${db.todayACC.toFixed(1)}h, ICT: ${db.todayICT.toFixed(1)}h
             - Weekly Study Hours: BS: ${db.BS.toFixed(1)}h, ACC: ${db.ACC.toFixed(1)}h, ICT: ${db.ICT.toFixed(1)}h
             - Monthly Study Hours: BS: ${db.monthBS.toFixed(1)}h, ACC: ${db.monthACC.toFixed(1)}h, ICT: ${db.monthICT.toFixed(1)}h
             - Recent Past Paper Scores: ${JSON.stringify(db.scoresHistory)}
