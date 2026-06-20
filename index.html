@@ -3,323 +3,405 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pamindu's A/L Success Dashboard</title>
+    <title>Pamindu's A/L Success LMS</title>
     <style>
         :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --accent-color: #ef4444;
-            --text-color: #f8fafc;
-            --text-muted: #94a3b8;
-            --success-color: #10b981;
+            --bg-dark: #0b0f19;
+            --panel-bg: #131c2e;
+            --bs-color: #3b82f6;
+            --acc-color: #f59e0b;
+            --ict-color: #8b5cf6;
+            --accent-red: #ef4444;
+            --text-main: #f8fafc;
+            --text-muted: #64748b;
+            --success: #10b981;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
             margin: 0;
             padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
         }
 
         .container {
-            width: 100%;
-            max-width: 1000px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
-        h1, h2, h3 {
-            text-align: center;
+        /* Top Header & Vision */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(90deg, #1e293b, #0f172a);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 5px solid var(--accent-red);
             margin-bottom: 20px;
         }
 
-        /* Countdown Style */
-        .countdown-card {
-            background: linear-gradient(135deg, #1e1b4b, #311042);
-            border: 2px solid var(--accent-color);
+        .vision-text {
+            font-size: 0.9rem;
+            color: #fbbf24;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        /* Auto Countdown Card */
+        .countdown-section {
+            background: radial-gradient(circle at top right, #1e1b4b, #0f172a);
+            border: 1px solid #334155;
+            padding: 25px;
             border-radius: 15px;
-            padding: 30px;
             text-align: center;
             margin-bottom: 25px;
-            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        .countdown-title {
-            font-size: 1.2rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .timer-display {
+        .timer-grid {
             display: flex;
             justify-content: center;
             gap: 15px;
             margin-top: 15px;
         }
 
-        .timer-box {
-            background: rgba(0, 0, 0, 0.4);
+        .time-box {
+            background: rgba(0,0,0,0.3);
             padding: 15px;
             border-radius: 10px;
-            min-width: 80px;
+            min-width: 75px;
+            border-bottom: 3px solid var(--accent-red);
         }
 
-        .timer-box span {
-            display: block;
-            font-size: 2.5rem;
+        .time-box span {
+            font-size: 2.2rem;
             font-weight: bold;
-            color: var(--accent-color);
-        }
-
-        .timer-box label {
-            font-size: 0.8rem;
-            color: var(--text-muted);
+            display: block;
         }
 
         /* Grid Layout */
-        .grid {
+        .main-grid {
             display: grid;
             grid-template-columns: 1fr;
             gap: 20px;
         }
 
-        @media (min-width: 768px) {
-            .grid {
-                grid-template-columns: 1fr 1fr;
+        @media (min-width: 900px) {
+            .main-grid {
+                grid-template-columns: 2fr 1fr;
             }
         }
 
-        .card {
-            background-color: var(--card-bg);
+        .panel {
+            background-color: var(--panel-bg);
             border-radius: 12px;
             padding: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border: 1px solid #1e293b;
         }
 
-        /* Table Style */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-            font-size: 0.9rem;
+        /* Subjects Dashboard Row */
+        .subject-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
         }
 
-        th, td {
-            padding: 10px;
-            text-align: left;
-            border-bottom: 1px solid #334155;
+        .sub-card {
+            padding: 15px;
+            border-radius: 10px;
+            color: #fff;
+            position: relative;
         }
+        .bg-bs { background: linear-gradient(135deg, #1d4ed8, #3b82f6); }
+        .bg-acc { background: linear-gradient(135deg, #b45309, #f59e0b); }
+        .bg-ict { background: linear-gradient(135deg, #6d28d9, #8b5cf6); }
 
-        th {
-            color: var(--accent-color);
-        }
-
-        /* Input Controls */
-        input, button, textarea {
+        /* Controls */
+        select, input, button {
             width: 100%;
             padding: 12px;
             margin: 8px 0;
             border-radius: 8px;
-            border: 1px solid #475569;
-            background-color: #0f172a;
+            border: 1px solid #334155;
+            background: #0f172a;
             color: white;
             box-sizing: border-box;
         }
 
-        button {
-            background-color: var(--accent-color);
+        button.btn-primary {
+            background: var(--bs-color);
+            border: none;
             font-weight: bold;
             cursor: pointer;
-            border: none;
-            transition: 0.2s;
         }
 
-        button:hover {
-            opacity: 0.9;
-        }
-
-        /* Todo List */
-        .todo-item {
-            display: flex;
+        /* Full Screen Overlay */
+        .overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: radial-gradient(circle, #111827, #030712);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
             align-items: center;
-            gap: 10px;
-            background: #0f172a;
-            padding: 10px;
-            margin: 5px 0;
-            border-radius: 6px;
+            z-index: 9999;
         }
 
-        .todo-item input[type="checkbox"] {
-            width: auto;
-        }
-
-        .completed {
-            text-decoration: line-through;
-            color: var(--text-muted);
-        }
-
-        .log-display {
-            font-size: 1.5rem;
-            text-align: center;
-            color: var(--success-color);
+        .overlay-timer {
+            font-size: 8rem;
             font-weight: bold;
+            font-family: monospace;
+            color: #fff;
+            text-shadow: 0 0 30px rgba(255,255,255,0.2);
+        }
+
+        /* Weakly Graph Styling */
+        .bar-chart {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end;
+            height: 15px;
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 8px;
             margin-top: 15px;
+        }
+        .bar {
+            width: 25px;
+            background: var(--success);
+            border-radius: 4px 4px 0 0;
+            transition: height 0.5s ease;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>🚀 PAMINDU'S A/L TARGET: DIST TOP 100</h1>
+        <div class="header">
+            <div>
+                <h2 style="margin:0;">Hello, B.G. Pamindu 👋</h2>
+                <div style="color:var(--text-muted); font-size:0.85rem;">Welcome back to your ultimate training space</div>
+            </div>
+            <div class="vision-text">🎯 TARGET: DISTRICT TOP 100 | DEFENDER 2026 🚘</div>
+        </div>
 
-        <!-- FULL COUNTDOWN SECTION -->
-        <div class="countdown-card">
-            <div class="countdown-title">🔔 පළමු විභාගයට (BS I - අගෝස්තු 13) තව තියෙන්නේ:</div>
-            <div class="timer-display">
-                <div class="timer-box"><span id="days">00</span><label>දින</label></div>
-                <div class="timer-box"><span id="hours">00</span><label>පැය</label></div>
-                <div class="timer-box"><span id="minutes">00</span><label>විනාඩි</label></div>
-                <div class="timer-box"><span id="seconds">00</span><label>තත්පර</label></div>
+        <div class="countdown-section">
+            <h3 id="target-title" style="margin:0; color:#cbd5e1;">🔔 ළඟම එන විභාගය පටන් ගැනීමට:</h3>
+            <div class="timer-grid">
+                <div class="time-box"><span id="days">00</span><small>දින</small></div>
+                <div class="time-box"><span id="hours">00</span><small>පැය</small></div>
+                <div class="time-box"><span id="mins">00</span><small>විනාඩි</small></div>
+                <div class="time-box"><span id="secs">00</span><small>තත්පර</small></div>
             </div>
         </div>
 
-        <div class="grid">
-            <!-- TIMETABLE CARD -->
-            <div class="card">
-                <h3>📅 නිල විභාග කාලසටහන</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>විෂය / පත්‍රය</th>
-                            <th>දිනය</th>
-                            <th>වේලාව</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>Business Studies I</td><td>අගෝස්තු 13</td><td>08:30 - 10:30</td></tr>
-                        <tr><td>Business Studies II</td><td>අගෝස්තු 17</td><td>13:00 - 16:10</td></tr>
-                        <tr><td>Common General Test</td><td>අගෝස්තු 21</td><td>08:30 - 10:30</td></tr>
-                        <tr><td>General English (I & II)</td><td>අගෝස්තු 22</td><td>08:30 - 14:00</td></tr>
-                        <tr><td>Accounting I</td><td>අගෝස්තු 25</td><td>08:30 - 11:40</td></tr>
-                        <tr><td>ICT I (MCQ)</td><td>අගෝස්තු 29</td><td>13:00 - 15:00</td></tr>
-                        <tr><td>Accounting II</td><td>අගෝස්තු 31</td><td>08:30 - 11:40</td></tr>
-                        <tr><td>ICT II (Essay)</td><td>සැප්තැම්බර් 01</td><td>08:30 - 11:40</td></tr>
-                    </tbody>
-                </table>
+        <div class="main-grid">
+            <div class="left-column">
+                <div class="subject-row">
+                    <div class="sub-card bg-bs">
+                        <h4>Business Studies</h4>
+                        <span id="hours-bs" style="font-size:1.5rem; font-weight:bold;">0h</span>
+                    </div>
+                    <div class="sub-card bg-acc">
+                        <h4>Accounting</h4>
+                        <span id="hours-acc" style="font-size:1.5rem; font-weight:bold;">0h</span>
+                    </div>
+                    <div class="sub-card bg-ict">
+                        <h4>ICT</h4>
+                        <span id="hours-ict" style="font-size:1.5rem; font-weight:bold;">0h</span>
+                    </div>
+                </div>
+
+                <div class="panel" style="margin-bottom:20px;">
+                    <h3>➕ Log Hours (Study / Recording)</h3>
+                    <select id="log-subject">
+                        <option value="BS">Business Studies</option>
+                        <option value="ACC">Accounting</option>
+                        <option value="ICT">ICT</option>
+                    </select>
+                    <select id="log-type">
+                        <option value="Study">තනියම පාඩම් කිරීම</option>
+                        <option value="Recording">Live Class / ਰෙਕੋਡින් බැලීම</option>
+                    </select>
+                    <input type="number" id="log-amount" placeholder="පැය ගණන (Ex: 2.5)" step="0.5">
+                    <button class="btn-primary" onclick="addManualHours()">Save Entry</button>
+                </div>
+
+                <div class="panel">
+                    <h3>⏱️ Start Focused Exam Practice</h3>
+                    <select id="timer-subject">
+                        <option value="None">විෂය තෝරන්න එපා (General)</option>
+                        <option value="BS">Business Studies</option>
+                        <option value="ACC">Accounting</option>
+                        <option value="ICT">ICT</option>
+                    </select>
+                    <input type="number" id="timer-duration" placeholder="කාලය විනාඩි වලින් (Ex: 60)" min="1">
+                    <button style="background:var(--accent-red); border:none; font-weight:bold;" onclick="startPaperTimer()">Start Full Screen Timer</button>
+                </div>
             </div>
 
-            <!-- STUDY LOG AND TODO CARD -->
-            <div class="card">
-                <h3>📊 Daily Study Hours Tracker</h3>
-                <label>අද දවසේ පාඩම් කරපු මුළු පැය ගණන ඇතුළත් කරන්න:</label>
-                <input type="number" id="studyHoursInput" placeholder="Ex: 8" min="0" max="24">
-                <button onclick="saveStudyHours()">Save Hours</button>
-                <div class="log-display" id="savedHoursDisplay">අද දවසේ එකතුව: 0 පැය</div>
-
-                <hr style="border-color: #334155; margin: 20px 0;">
-
-                <h3>📝 ⚡ Today's Targets / Todo List</h3>
-                <div style="display: flex; gap: 5px;">
-                    <input type="text" id="todoInput" placeholder="කරන්න ඕන වැඩක් ඇතුළත් කරන්න...">
-                    <button style="width: auto;" onclick="addTodo()">Add</button>
+            <div class="right-column">
+                <div class="panel" style="text-align:center; margin-bottom:20px; background:#1e1b4b;">
+                    <h3 style="margin:0 0 10px 0; font-size:1rem; color:var(--text-muted);">👩 Your Mom's Mood Status</h3>
+                    <div id="mom-emoji" style="font-size:4rem;">😡</div>
+                    <h4 id="mom-status" style="margin:10px 0; color:#ef4444;">Results Pending...</h4>
+                    <p style="font-size:0.8rem; color:var(--text-muted);">සතියේ මුළු පැය ගණන අනුව මූඩ් එක වෙනස් වේ.</p>
                 </div>
-                <div id="todoList"></div>
+
+                <div class="panel">
+                    <h3>📊 Weekly Activity</h3>
+                    <div id="weekly-total" style="font-size:1.2rem; font-weight:bold; color:var(--success);">Total: 0 Hours</div>
+                    <div class="bar-chart" id="chart-container">
+                        </div>
+                </div>
             </div>
         </div>
     </div>
 
+    <div id="timerOverlay" class="overlay">
+        <div style="color:var(--text-muted); font-size:1.5rem; margin-bottom:20px;">🚨 FOCUS MODE ACTIVE (පේපරය සිදුකරමින් පවතී)</div>
+        <div id="bigTimerDisplay" class="overlay-timer">00:00</div>
+        <div style="margin-top:40px; display:flex; gap:20px; width:300px;">
+            <button onclick="cancelPaperTimer()" style="background:#475569; border:none;">Cancel (ලකුණු එකතු නොවේ)</button>
+        </div>
+    </div>
+
     <script>
-        // 1. LIVE COUNTDOWN TIMER (Target: August 13, 2026 08:30:00)
-        const examDate = new Date("August 13, 2026 08:30:00").getTime();
+        // OFFICIAL AUTOMATIC TIMETABLE DATA
+        const timetable = [
+            { name: "Business Studies I", date: "August 13, 2026 08:30:00" },
+            { name: "Business Studies II", date: "August 17, 2026 13:00:00" },
+            { name: "Common General Test", date: "August 21, 2026 08:30:00" },
+            { name: "General English", date: "August 22, 2026 08:30:00" },
+            { name: "Accounting I", date: "August 25, 2026 08:30:00" },
+            { name: "ICT I (MCQ)", date: "August 29, 2026 13:00:00" },
+            { name: "Accounting II", date: "August 31, 2026 08:30:00" },
+            { name: "ICT II (Essay)", date: "September 01, 2026 08:30:00" }
+        ];
 
-        function updateCountdown() {
+        // 1. AUTO COUNTDOWN MANAGEMENT
+        function runAutoCountdown() {
             const now = new Date().getTime();
-            const distance = examDate - now;
+            let activeExam = null;
 
-            const d = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const s = Math.floor((distance % (1000 * 60)) / 1000);
+            for (let exam of timetable) {
+                if (new Date(exam.date).getTime() > now) {
+                    activeExam = exam;
+                    break;
+                }
+            }
 
-            document.getElementById("days").innerText = d < 10 ? "0" + d : d;
-            document.getElementById("hours").innerText = h < 10 ? "0" + h : h;
-            document.getElementById("minutes").innerText = m < 10 ? "0" + m : m;
-            document.getElementById("seconds").innerText = s < 10 ? "0" + s : s;
+            if (!activeExam) {
+                document.getElementById("target-title").innerText = "G.C.E. A/L විභාගය අවසන් වී ඇත! 🎉";
+                return;
+            }
 
-            if (distance < 0) {
-                clearInterval(timerInterval);
-                document.querySelector(".countdown-title").innerText = "විභාගය ආරම්භ වී ඇත! උපරිමයෙන් කරපන්!";
+            document.getElementById("target-title").innerText = `🔔 ළඟම එන විභාගය: ${activeExam.name} (${activeExam.date.split(',')[0]})`;
+
+            const diff = new Date(activeExam.date).getTime() - now;
+            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById("days").innerText = d < 10 ? "0"+d : d;
+            document.getElementById("hours").innerText = h < 10 ? "0"+h : h;
+            document.getElementById("mins").innerText = m < 10 ? "0"+m : m;
+            document.getElementById("secs").innerText = s < 10 ? "0"+s : s;
+        }
+        setInterval(runAutoCountdown, 1000);
+
+        // 2. DATA AND STORAGE
+        let db = JSON.parse(localStorage.getItem("paminduLMS_DB")) || { BS: 0, ACC: 0, ICT: 0, history: [] };
+
+        function updateUI() {
+            document.getElementById("hours-bs").innerText = db.BS + "h";
+            document.getElementById("hours-acc").innerText = db.ACC + "h";
+            document.getElementById("hours-ict").innerText = db.ICT + "h";
+
+            // Total calculations
+            let total = db.BS + db.ACC + db.ICT;
+            document.getElementById("weekly-total").innerText = `Total Tracked: ${total} Hours`;
+
+            // Hard Mom Mood Logic
+            let momEmoji = "😡";
+            let momStatus = "අම්මා මල පැනලා ඉන්නේ! (වැඩ කරපන් කුසීතයා)";
+            if (total >= 15) { momEmoji = "😟"; momStatus = "තාම මදි මචන්, අම්මා බයෙන් ඉන්නේ!"; }
+            if (total >= 35) { momEmoji = "🙂"; momStatus = "දැන් ෂේප්, අම්මට පොඩි හිනාවක් ඇවිත්."; }
+            if (total >= 55) { momEmoji = "😎"; momStatus = "නියමයි! අම්මා උඹ ගැන ආඩම්බරෙන් ඉන්නේ."; }
+
+            document.getElementById("mom-emoji").innerText = momEmoji;
+            document.getElementById("mom-status").innerText = momStatus;
+            document.getElementById("mom-status").style.color = total >= 35 ? "#10b981" : "#ef4444";
+        }
+
+        function addManualHours() {
+            let sub = document.getElementById("log-subject").value;
+            let amt = parseFloat(document.getElementById("log-amount").value);
+            if (!isNaN(amt) && amt > 0) {
+                db[sub] += amt;
+                localStorage.setItem("paminduLMS_DB", JSON.stringify(db));
+                updateUI();
+                document.getElementById("log-amount").value = "";
+                alert("Hours logged successfully!");
             }
         }
-        const timerInterval = setInterval(updateCountdown, 1000);
-        updateCountdown();
 
-        // 2. STORAGE MANAGEMENT FOR STUDY HOURS
-        function saveStudyHours() {
-            const hours = document.getElementById("studyHoursInput").value;
-            if(hours !== "") {
-                localStorage.setItem("savedStudyHours", hours);
-                displayHours();
-                alert("Study hours සුරැකිව තබාගන්නා ලදී! නියමයි මචන්!");
+        // 3. FULL SCREEN TIMER LOGIC
+        let countdownInterval;
+        let elapsedSeconds = 0;
+        let totalSecondsAllocated = 0;
+        let activeTimerSubject = "None";
+
+        function startPaperTimer() {
+            let durationMins = parseInt(document.getElementById("timer-duration").value);
+            if (isNaN(durationMins) || durationMins <= 0) {
+                alert("කරුණාකර නිවැරදි විනාඩි ගණනක් ඇතුළත් කරන්න!");
+                return;
             }
+            activeTimerSubject = document.getElementById("timer-subject").value;
+            totalSecondsAllocated = durationMins * 60;
+            elapsedSeconds = totalSecondsAllocated;
+
+            document.getElementById("timerOverlay").style.display = "flex";
+            runOverlayTimer();
+            countdownInterval = setInterval(runOverlayTimer, 1000);
         }
 
-        function displayHours() {
-            const storedHours = localStorage.getItem("savedStudyHours") || "0";
-            document.getElementById("savedHoursDisplay").innerText = "අද දවසේ එකතුව: " + storedHours + " පැය";
-            document.getElementById("studyHoursInput").value = storedHours;
-        }
+        function runOverlayTimer() {
+            let mins = Math.floor(elapsedSeconds / 60);
+            let secs = elapsedSeconds % 60;
+            document.getElementById("bigTimerDisplay").innerText = 
+                (mins < 10 ? "0" + mins : mins) + ":" + (secs < 10 ? "0" + secs : secs);
 
-        // 3. STORAGE MANAGEMENT FOR TODO LIST
-        function loadTodos() {
-            const todos = JSON.parse(localStorage.getItem("dashboardTodos")) || [];
-            const listContainer = document.getElementById("todoList");
-            listContainer.innerHTML = "";
-            todos.forEach((todo, index) => {
-                const item = document.createElement("div");
-                item.className = "todo-item";
-                item.innerHTML = `
-                    <input type="checkbox" ${todo.completed ? 'checked' : ''} onchange="toggleTodo(${index})">
-                    <span class="${todo.completed ? 'completed' : ''}">${todo.text}</span>
-                    <span style="margin-left:auto; color:#ef4444; cursor:pointer;" onclick="deleteTodo(${index})">❌</span>
-                `;
-                listContainer.appendChild(item);
-            });
-        }
-
-        function addTodo() {
-            const text = document.getElementById("todoInput").value;
-            if (text.trim() !== "") {
-                const todos = JSON.parse(localStorage.getItem("dashboardTodos")) || [];
-                todos.push({ text: text, completed: false });
-                localStorage.setItem("dashboardTodos", JSON.stringify(todos));
-                document.getElementById("todoInput").value = "";
-                loadTodos();
+            if (elapsedSeconds <= 0) {
+                clearInterval(countdownInterval);
+                document.getElementById("timerOverlay").style.display = "none";
+                
+                // Complete successfully -> Sync auto hours
+                let loggedHours = totalSecondsAllocated / 3600;
+                if (activeTimerSubject !== "None") {
+                    db[activeTimerSubject] += parseFloat(loggedHours.toFixed(1));
+                }
+                localStorage.setItem("paminduLMS_DB", JSON.stringify(db));
+                updateUI();
+                alert("💥 නියමයි මචන්! පේපර් එක සාර්ථකව අවසන්. ලකුණු ටික Auto-Sync වුණා!");
             }
+            elapsedSeconds--;
         }
 
-        function toggleTodo(index) {
-            const todos = JSON.parse(localStorage.getItem("dashboardTodos"));
-            todos[index].completed = !todos[index].completed;
-            localStorage.setItem("dashboardTodos", JSON.stringify(todos));
-            loadTodos();
+        function cancelPaperTimer() {
+            clearInterval(countdownInterval);
+            document.getElementById("timerOverlay").style.display = "none";
+            alert("❌ ටයිමරය මැදින් නැවැත්තුවා. ඒ නිසා මේ පැය ගණන Study Hours වලට එකතු වුණේ නැහැ!");
         }
 
-        function deleteTodo(index) {
-            const todos = JSON.parse(localStorage.getItem("dashboardTodos"));
-            todos.splice(index, 1);
-            localStorage.setItem("dashboardTodos", JSON.stringify(todos));
-            loadTodos();
-        }
-
-        // INITIAL LOAD ON REFRESH
         window.onload = function() {
-            displayHours();
-            loadTodos();
-        }
+            updateUI();
+        };
     </script>
 </body>
 </html>
